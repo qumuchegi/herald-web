@@ -21,6 +21,10 @@ import Laundry from '@/pages/Laundry'
 import Download from '@/pages/Download'
 import Bus from '@/pages/Bus';
 import Curriculum from '@/pages/Curriculum'
+import TeamMember from '@/pages/Teammember'
+import Manage from '@/pages/Manage'
+import Wantdetails from '@/pages/Wantdetails'
+import Apply from '@/pages/Apply'
 
 Vue.use(Router)
 
@@ -144,6 +148,26 @@ export default new Router({
       path: '/curriculum',
       name: '课表概览',
       component: Curriculum
+    },
+    {
+      path: '/callmember',
+      name: '招队友',
+      component: TeamMember
+    },
+    {
+      path: '/manage',
+      name: '我的',
+      component:  Manage
+    },
+    {
+      path: '/wantdetails/:wantid',
+      name: '召集令详情',
+      component: Wantdetails 
+    },
+    {
+      path: '/apply/:applyid',
+      name: '入队申请',
+      component: Apply
     },
     {
       path: '*',

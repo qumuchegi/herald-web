@@ -4,6 +4,7 @@
       home(:user='user' v-if='currentTab == "home"')
       discover(:user='user' v-if='currentTab == "discover"')
       notice(:user='user' v-if='currentTab == "notice"')
+      team(:user='user' v-if='currentTab =="team"')
     .tab-bar
       .tab-item.tab-item-home(@click='currentTab = "home"')
         img.icon(:src='currentTab == "home" ? tabHomeSelectedImg : tabHomeImg')
@@ -14,25 +15,31 @@
       .tab-item.tab-item-notice(@click='currentTab = "notice"')
         img.icon(:src='currentTab == "notice" ? tabNoticeSelectedImg : tabNoticeImg')
         p.title 通知
+      .tab-item.tab-item-team(@click='currentTab ="team"')
+        img.icon(:src='currentTab == "team" ? tabTeamSelectedImg : tabTeamImg')
+        p.title 组队
 </template>
 
 <script>
   import home from './TabHome.vue'
   import discover from './TabDiscover.vue'
   import notice from './TabNotice.vue'
+  import team from './TabTeam.vue'
   import scrollView from '../components/ScrollView.vue'
 
   import tabHomeImg from 'static/images/tab-home.png'
   import tabNoticeImg from 'static/images/tab-notice.png'
   import tabDiscoverImg from 'static/images/tab-discover.png'
+  import tabTeamImg from 'static/images/tab-team.png'
   import tabHomeSelectedImg from 'static/images/tab-home-selected.png'
   import tabNoticeSelectedImg from 'static/images/tab-notice-selected.png'
   import tabDiscoverSelectedImg from 'static/images/tab-discover-selected.png'
+  import tabTeamSelectedImg from 'static/images/tab-team-selected.png'
 
   export default {
     props: ['user'],
     components: {
-      home, discover, notice, scrollView
+      home, discover, notice, team, scrollView
     },
     data () {
       return {
@@ -40,9 +47,11 @@
         tabHomeImg,
         tabNoticeImg,
         tabDiscoverImg,
+        tabTeamImg,
         tabHomeSelectedImg,
         tabNoticeSelectedImg,
-        tabDiscoverSelectedImg
+        tabDiscoverSelectedImg,
+        tabTeamSelectedImg
       }
     },
     async created () {
