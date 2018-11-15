@@ -3,37 +3,37 @@
             <h2>填写召集令</h2>
             <div id= "call-form">
               <div>
-                  <span style = "color: rgb(74,169,192)">发布人</span>
-                  <input placeholder= "发布人全名" id= "publisher-name" v-model= 'publisherName'/>
-              </div>
-              <hr/>
-              <div>
-                  <span style = "color: rgb(74,169,192)">学号</span>
-                  <input placeholder= "发布人学号" id= "publisher-stunumber" v-model= 'publisherStunum'/>
-              </div>
-              <hr/>
-              <div>
                   <span style = "color: rgb(74,169,192)">QQ</span>
-                  <input placeholder= "发布人QQ,用于后续联系" id= "publisher-QQ" v-model= 'publisherQQ'/>
+                  <input placeholder= "发布人QQ,用于后续联系" id= "publisher-QQ" v-model= 'qq'/>
+              </div>
+              <hr/>
+              <div>
+                    <span style = "color: rgb(74,169,192)">队名</span>
+                    <input placeholder= "队名" id= "publisher-comptation" v-model= 'teamName'/>
               </div>
               <hr/>
               <div>
                   <span style = "color: rgb(74,169,192)">竞赛</span>
-                  <input placeholder= "北斗杯 结构竞赛 srtp  ......" id= "publisher-comptation" v-model= 'publishedProj'/>
+                  <input placeholder= "北斗杯 结构竞赛 srtp  ......" id= "publisher-comptation" v-model= 'projectName'/>
               </div>
               <hr/>
               <div>
                   <span style = "color: rgb(74,169,192)">预计队员人数</span>
-                  <input placeholder= ">=1" id= "publisher-num" v-model= 'membersNum'/>
+                  <input placeholder= ">=1" id= "publisher-num" v-model= 'maxPeople'/>
               </div>
               <hr/>
+              <div>
+                  <span style = "color: rgb(74,169,192)">截止时间</span>
+                  <input type='date' placeholder="2019" v-model= "deadLine" class='deadLine'/>
+                   
+              </div>
               <div>
                   <span style = "color: rgb(74,169,192)">组队说明</span>
                   <textarea id = "publisher-more" 
                    placeholder = "队员结构  招人条件 组队后分工安排 等......." 
-                       v-model = 'publishDetails'
+                       v-model = 'description'
                           rows = "10"
-                          cols = "25"
+                          cols = "30"
                   >
 
                   </textarea>
@@ -50,48 +50,71 @@
             >
              已发布  请返回搜索即可查看
             </div>
+            <div v-if= "hasPublishedSameProj" style= "text-align : center;
+                                                 margin : 2% 20% 2% 20%;
+                                                  color : rgb(62,121,124);
+                                                 border : radius 3px;
+                                              font-size : 130%"
+            >
+            已经有相同队名发布，请选择其他队名
+            </div>
     </div>
 </template>
 <script>
-    import axios from 'axios'
+    import api from '@/api';
     import Vue from 'vue'
+
     export default {
+        props: [ 'user' ],
         data() {
            return {
-              publisherName : '',
-            publisherStunum : '',
-                publisherQQ : '',
-              publishedProj : '',
-                 membersNum : '',
-             publishDetails : '',
-                isPublished : false  //后端有无保存成功召集令
-           }
+               //召集令字段，将在后端入库，注释带* *的为新字段，带# #为以前保留的字段
+                                  qq : '',                     //发起人qq
+                            teamName : '',                     //*发起人给团队起的名* 
+                         projectName : '',                     //发起项目名
+                           maxPeople : '',                     //发起人给团队设置的成员最大数量
+                            deadLine : '',                   //召集令截止时间,
+                           
+                         description : '',                     //召集令描述
+                         isPublished : false ,                 //后端有无保存成功召集令 后端数据库无此字段
+                hasPublishedSameProj : false                   //后端是否查询到之前已经有相同竞赛的申请，后端数据库无此字段
+            }
        },
        created() {
 
        },
        methods: {
-           publishWantAd() { //向后端发送填好的召集令信息，后端接受后会保存
-               console.log( this.publisherName );
-               console.log("publishDetails",this.publishDetails)
-               axios.post( 'http://localhost:9093/user/publishwant',
-               {
-                     publisherName : this.publisherName,
-                   publisherStunum : this.publisherStunum,
-                       publisherQQ : this.publisherQQ,
-                     publishedProj : this.publishedProj,
-                        membersNum : this.membersNum,
-                    publishDetails : this.publishDetails
-               }
-               ).then( res => {
-                   if(res.status=== 200 && res.data.code=== 0){
-                       this.isPublished= true;
-                   }
-               })
-           }
-       }
+           //向后端发送填好的召集令信息，后端接受后会保存
+           async publishWantAd() {  
+               let postdata= {  
+                                    qq : this.qq, 
+                              teamName : this.teamName,
+                           projectName : this.projectName,
+                             maxPeople : this.maxPeople,
+                              deadLine : this.deadLine,
+                           description : this.description,  
 
-      }
+                        } ;
+                console.log(postdata.deadLine);
+               if( this.qq && 
+                   this.teamName && 
+                   this.projectName && 
+                   this.maxPeople && 
+                   this.deadLine&&
+                   this.description )
+                {
+
+                    let res =  await api.post('/api/team', postdata);
+                    //后端召集令入库后给前端的响应
+                    console.log('res',res)
+                    res.status===0 ? this.isPublished=true : this.hasPublishedSameProj=true;
+               }else{
+                Vue.toasted.show('请填写完整！！！')
+               }
+           },
+
+       }
+    }
 </script>
 <style scoped>
 h2{
@@ -129,5 +152,8 @@ h2{
 }
 hr{
     margin: 2%;
+}
+.deadLine{
+    width: 50%
 }
 </style>

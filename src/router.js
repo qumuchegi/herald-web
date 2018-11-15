@@ -165,11 +165,6 @@ export default new Router({
       component: Wantdetails 
     },
     {
-      path: '/apply/:applyid',
-      name: '入队申请',
-      component: Apply
-    },
-    {
       path: '*',
       redirect: '/'
     }
