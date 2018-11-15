@@ -24,7 +24,6 @@ import Curriculum from '@/pages/Curriculum'
 import TeamMember from '@/pages/Teammember'
 import Manage from '@/pages/Manage'
 import Wantdetails from '@/pages/Wantdetails'
-import Apply from '@/pages/Apply'
 
 Vue.use(Router)
 
