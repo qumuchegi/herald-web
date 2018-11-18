@@ -1,64 +1,28 @@
-<template>
-    <div>
-            <h2>填写召集令</h2>
-            <div id= "call-form">
-              <div>
-                  <span style = "color: rgb(74,169,192)">QQ</span>
-                  <input placeholder= "发布人QQ,用于后续联系" id= "publisher-QQ" v-model= 'qq'/>
-              </div>
-              <hr/>
-              <div>
-                    <span style = "color: rgb(74,169,192)">队名</span>
-                    <input placeholder= "队名" id= "publisher-comptation" v-model= 'teamName'/>
-              </div>
-              <hr/>
-              <div>
-                  <span style = "color: rgb(74,169,192)">竞赛</span>
-                  <input placeholder= "北斗杯 结构竞赛 srtp  ......" id= "publisher-comptation" v-model= 'projectName'/>
-              </div>
-              <hr/>
-              <div>
-                  <span style = "color: rgb(74,169,192)">预计队员人数</span>
-                  <input placeholder= ">=1" id= "publisher-num" v-model= 'maxPeople'/>
-              </div>
-              <hr/>
-              <div>
-                  <span style = "color: rgb(74,169,192)">截止时间</span>
-                  <input type='date' placeholder="2019" v-model= "deadLine" class='deadLine'/>
-                   
-              </div>
-              <div>
-                  <span style = "color: rgb(74,169,192)">组队说明</span>
-                  <textarea id = "publisher-more" 
-                   placeholder = "队员结构  招人条件 组队后分工安排 等......." 
-                       v-model = 'description'
-                          rows = "10"
-                          cols = "30"
-                  >
-
-                  </textarea>
-              </div>
-            </div>
-            <button  @click= "publishWantAd" id= 'publish-button'>
-            发布
-            </button>
-            <div v-if= "isPublished" style= "text-align : center;
-                                                 margin : 2% 20% 2% 20%;
-                                                  color : rgb(62,121,124);
-                                                 border : radius 3px;
-                                              font-size : 130%"
-            >
-             已发布  请返回搜索即可查看
-            </div>
-            <div v-if= "hasPublishedSameProj" style= "text-align : center;
-                                                 margin : 2% 20% 2% 20%;
-                                                  color : rgb(62,121,124);
-                                                 border : radius 3px;
-                                              font-size : 130%"
-            >
-            已经有相同队名发布，请选择其他队名
-            </div>
-    </div>
+<template lang="pug">
+    div
+      h2 填写召集令
+      #call-form
+       div: span.key QQ
+            input#publisher-QQ(placeholder = "发布人QQ,用于后续联系",v-model = "qq") 
+       hr
+       div: span.key 队名
+            input#publisher-comptation(placeholder = "队名",v-model = "teamName")
+       hr
+       div: span.key 竞赛
+            input#publisher-comptation(placeholder = "竞赛名 :srtp 北斗杯……",v-model = "projectName")
+       hr 
+       div: span.key 预期小组人数
+            input#publisher-num(placeholder = ">=1",v-model = "maxPeople")
+       hr 
+       div: span.key 截止时间
+            input.deadLine(type = "date",v-model = "deadLine")
+       hr
+       div: span.key 组队说明
+            textarea#publish-more(placeholder = "队员结构  招人条件 组队后分工安排 等.......",
+                                   v-model = "description",rows = "10",cols = "30")
+       button#publish-button(@click = "publishWantAd") 发布
+       div#published-alert(v-if = "isPublished")  已发布  请返回刷新即可查看
+       div#hassamepublish-alert(v-if = "hasPublishedSameProj") 已经有相同队名发布，请选择其他队名
 </template>
 <script>
     import api from '@/api';
@@ -74,7 +38,6 @@
                          projectName : '',                     //发起项目名
                            maxPeople : '',                     //发起人给团队设置的成员最大数量
                             deadLine : '',                   //召集令截止时间,
-                           
                          description : '',                     //召集令描述
                          isPublished : false ,                 //后端有无保存成功召集令 后端数据库无此字段
                 hasPublishedSameProj : false                   //后端是否查询到之前已经有相同竞赛的申请，后端数据库无此字段
@@ -96,23 +59,21 @@
 
                         } ;
                 console.log(postdata.deadLine);
-               if( this.qq && 
+                if( this.qq && 
                    this.teamName && 
                    this.projectName && 
                    this.maxPeople && 
                    this.deadLine&&
                    this.description )
                 {
-
                     let res =  await api.post('/api/team', postdata);
                     //后端召集令入库后给前端的响应
                     console.log('res',res)
                     res.status===0 ? this.isPublished=true : this.hasPublishedSameProj=true;
-               }else{
+                }else{
                 Vue.toasted.show('请填写完整！！！')
-               }
+                }
            },
-
        }
     }
 </script>
@@ -155,5 +116,15 @@ hr{
 }
 .deadLine{
     width: 50%
+}
+#published-alert,#hassamepublish{
+    text-align : center;
+    margin : 2% 20% 2% 20%;
+    color : rgb(62,121,124);
+    border : radius 3px;
+    font-size : 130%
+}
+.key{
+    color: rgb(74,169,192)
 }
 </style>

@@ -1,134 +1,68 @@
-<template>
- <div id='body'>
-     <ul>
-        <li @click= "clickToSearch(isQuery)">
-            搜team
-        </li>
-        <li @click= "clickToFindMate">
-            招队员
-        </li>
-        <li @click= "clickToManage">
-            我的
-        </li>
-     </ul>
-      <p v-if= 'isQuery'   id= 'query-input'>
-          <input v-model= 'queryStr'   placeholder= "输入竞赛名/发起人名或一卡通"/>
-          <button @click= "getWantsOnPage_Of(3,page)">
-              搜索
-          </button>
-          <button @click= 'cancelQuery'>
-              取消
-          </button>
-      </p>
-      <div id="turn-page">
-            <span id="last-page" v-if= "page > 1" @click= "getLastPage" >上一页</span>
-            <span v-if= "page===1" style="color: white">占位符</span>
-            <span style="margin-left: 28.5%">第{{page}}页</span>
-            <span id="next-page" v-if= "wantInfo.length===6" @click= "getNextPage" >下一页</span>
-      </div>
-
-      <div @click="getWantsOnPage_Of(1,page)" 
-             style="border-radius: 2%;
-                    width: 14%;
-                    margin-top: 0.6% ;
-                    margin-left:42%;
-                    margin-bottom: 0%;
-                    padding:1% 2% 1% 2%;
-                    background-color: rgba(110, 218, 226, 0.705)">刷新列表</div>
-    <div v-if= "wantInfo.length===0" id="nomore">无更多召集令</div>
-    <div id="want-container">
-      <div v-for= "wantItem in wantInfo"  v-if="wantInfo.length!==0" :key= "wantItem.id"   id= 'want-item'>
-          <hr class="divider"/>
-          <div id= 'want-project-title'>
-             <span>{{ wantItem.projectName }}</span>
-             <span style="float: right;color:rgb(188, 199, 199)">发布于{{publishedData_unixTOnormal( wantItem.publishedDate )}}</span>
-           </div> 
-
-          <div style= "display: inline-block; padding: 2% 2% 3% 2%">
-            <div id= 'present-members'>
-                    <span style= 'background-color : rgba(102,102,102);
-                                             color : aliceblue;
-                                     border-radius : 2px 0 0px 2px'>
-                        目前组员
-                    </span>
-                    <span style= 'background-color : rgb(71,137,174);
-                                             color : white'>
-                            {{ wantItem.currentPeople.length }}/{{ wantItem.maxPeople }}
-                    </span>
-            </div>
-            <div id= 'want-publisher'>
-                    <span style= 'background-color :rgba(102,102,102);
-                                             color : aliceblue;
-                                     border-radius : 2px'>
-                        发布人
-                    </span>
-                    <span style= 'background-color : rgb(125,214,105);
-                                             color :white'>
-                            {{ wantItem.masterName }}
-                    </span>
-            </div>
-      </div>
-      <button style= 'float: right; margin-right: 2%'   @click= "clickToDetails(wantItem.tid)">
-          详情
-      </button>
-      <button style= 'float: right;'  id = 'apply-button'  @click= "isapplyJoin(wantItem.tid,wantItem.masterName)">
-          <span>申请加入</span>
-      </button>
-      <span v-if= "isapply" id= 'hasapplyed-warn'>
-            <span style= "margin-left: 5%; color:rgb(61,123,132)">
-                填写申请表以便于对方联系你
-            </span>
-            <div>
-                  <span>你的QQ</span><input style= "margin-left: 4.2%" v-model= "applyFrom_QQ"/>
-                  <hr style= "margin: 1%"/>
-                  <div>个人简述
-                      <textarea v-model= "applyResonText"></textarea>
-                  </div>
-             </div>
-            <hr style= "margin: 2%"/>
-          <button @click= 'applyJoin(applyWant_ID)' 
-                 style= "font-size : 120%; 
-                             color :deepskyblue;
-                           padding : 1% 20% 1% 20%;
-                       margin-left : 4%;
-                        margin-top : 3%;
-                      "
-                     >
-                     确认申请
-          </button>
-          <button @click= "isapply= false"
-                 style= "font-size : 120%; 
-                             color :deepskyblue;
-                        margin-top : 3%;
-                      ">
-              取消
-          </button>
-        </span>
-      </div>
-    </div>
- </div>
-</template>
+<template lang="pug">
+    #body 
+        ul 
+          li(@click= "clickToSearch(isQuery)") 搜team
+          li(@click= "clickToFindMate") 招队员
+          li(@click= "clickToManage") 我的
+        p#query-input(v-if= 'isQuery')
+          input(v-model= 'queryStr',placeholder= "输入竞赛名/发起人名或一卡通")
+          button(@click= "getWantsOnPage_Of(3,page)") 搜索
+          button(@click= 'cancelQuery') 取消
+        #turn-page 
+          span#ast-page(v-if= "page > 1",@click= "getLastPage") 上一页
+          span(v-if= "page===1",style="color: white") 占位符
+          span(style="margin-left: 28.5%") 第{{page}}页
+          span#next-page(v-if= "wantInfo.length===6",@click= "getNextPage" ) 下一页
+        div(@click="getWantsOnPage_Of(1,page)",
+            style="border-radius: 2%;width: 14%;margin-top: 0.6% ;margin-left:42%;margin-bottom: 0%;padding:1% 2% 1% 2%;background-color: rgba(110, 218, 226, 0.705)") 刷新列表
+        div#nomore(v-if= "wantInfo.length===0") 无更多召集令
+        #want-container 
+          #want-item(v-for= "wantItem in wantInfo",v-if="wantInfo.length!==0",:key= "wantItem.id" )
+            hr.divider 
+            #want-project-title 
+                span {{ wantItem.projectName }}
+                span(style="float: right;color:rgb(188, 199, 199)") 发布于{{publishedData_unixTOnormal( wantItem.publishedDate )}}
+            div(style= "display: inline-block; padding: 2% 2% 3% 2%")
+                #present-members 
+                    span(style= 'background-color : rgba(102,102,102);color : aliceblue;border-radius : 2px 0 0px 2px') 目前组员
+                    span(style= 'background-color : rgb(71,137,174);color : white')   {{ wantItem.currentPeople.length }}/{{ wantItem.maxPeople }}
+                #want-publisher 
+                    span(style= 'background-color : rgba(102,102,102);color : aliceblue;border-radius : 2px') 发布人
+                    span(style= 'background-color : rgb(125,214,105);color : white')  {{ wantItem.masterName }}
+            button(style= 'float: right; margin-right: 2%',@click= "clickToDetails(wantItem.tid)") 详情
+            button#apply-button(style= 'float: right;',@click= "isapplyJoin(wantItem.tid,wantItem.masterName)") 申请加入
+            span#hasapplyed-warn(v-if= "isapply")
+                    span(style= "margin-left: 5%; color:rgb(61,123,132)") 填写申请表以便于对方联系你
+                    div 
+                       div  
+                        input(style= " ",placeholder="你的QQ",v-model= "applyFrom_QQ")
+                       hr(style= "margin: 1%")
+                       div 
+                           textarea(v-model= "applyResonText" placeholder="个人简述")
+                    hr(style= "margin: 2%")
+                    button(@click= 'applyJoin(applyWant_ID)',
+                            style= "font-size : 120%; color : deepskyblue;width:100%") 确认申请
+                    button(@click= "isapply= false",
+                            style= "font-size : 120%; color : deepskyblue;margin-top : 3%;width:100%") 取消
+  </template>
 
 <script>
     import api from '@/api'
     import Vue from 'vue'
  
     export default{
-
         props: [ 'user' ],
         created() {
            this.getWantsOnPage_Of(1,this.page);
         },
-
        data() {
            return {
-               showTab:1,        
-               type:1,            //搜索类，1 获取所有组队，3 搜索特定组队
-               isQuery : false,   // 搜索框是否渲染的状态，false默认不渲染
-              queryStr : '',      // 获取搜索框input 的项目名称
-                page : 1,   // 获取对应页数的组队项
-              
-                 wantInfo : [],      // post请求到后端所有的召集令后存到这个数组中用于将其列表渲染出来
+               showTab : 1,        
+                  type :1,            //搜索类，1 获取所有组队，3 搜索特定组队
+               isQuery : false,       // 搜索框是否渲染的状态，false默认不渲染
+              queryStr : '',          // 获取搜索框input 的项目名称
+                  page : 1,           // 获取对应页数的组队项
+              wantInfo : [],      // post请求到后端所有的召集令后存到这个数组中用于将其列表渲染出来
                isapply : false,   // 是否申请，申请中点击 “申请加入” 后唤出申请者信息的填写表单，这个 isapply 决定是否渲染这个表单
             hasapplyed : false,   // 提交申请表单后socket会将申请信息同时发送给召集令的发布者和保存到后端的数据库，如果这个操作过程成功则这个hasapply为true
           applyWant_ID : '',      // 用于在已经渲染出来的召集令列表中获取某一个召集令在数据库的ID，在“确认申请”后用这个ID创建一个申请信息
@@ -138,13 +72,9 @@
            applyResonText:'',     //申请者理由
         }
     },
-   
-    computed: {
-        
-        },
     methods: {
         async getWantsOnPage_Of(type,page) {
-            if(type===3){
+            if(type === 3){
                 let queryStr= this.queryStr;
                 console.log('搜索type，page,queryStr', type,page,queryStr)
                 if(this.queryStr === '') {
@@ -155,7 +85,6 @@
                     console.log(postData)
                      let res= await api.get('/api/team', postData)
                      this.wantInfo = res.data;
-                   
                      console.log('搜索res',this.wantInfo)
                 }
             };
@@ -163,7 +92,6 @@
                 console.log('获取组队项：type,page',type,page)
                 let res = await api.get('/api/team', { type:type, page:page});
                 this.wantInfo = res.data;
-                
                 console.log('this.wantInfo',this.wantInfo)
             }
         },
@@ -202,11 +130,9 @@
         ,
         clickToDetails(tid){
             this.$router.push({name: '召集令详情', params: {wantid:tid}})
-
         },
         async applyJoin( id ) {
-            var that = this;
-             if( this.applyResonText && this.applyFrom_QQ ) 
+            if( this.applyResonText && this.applyFrom_QQ ) 
             {
                 let res = await api.post('/api/team/registration', 
                 { 
@@ -221,12 +147,16 @@
             Vue.toasted.show('请填写完整');   
         },
         publishedData_unixTOnormal(unixtime){
-          let unixTimestamp = new Date(unixtime * 1000)
-          let Y = unixTimestamp.getFullYear()
-          let M = ((unixTimestamp.getMonth() + 1) > 10 ? (unixTimestamp.getMonth() + 1) : '0' + (unixTimestamp.getMonth() + 1))
-          let D = (unixTimestamp.getDate() > 10 ? unixTimestamp.getDate() : '0' + unixTimestamp.getDate())
-          let toDay = Y + '-' + M + '-' + D
-          return  toDay
+          let unixTimestamp = new Date(unixtime * 1000);
+          let Y = unixTimestamp.getFullYear();
+          let M = ((unixTimestamp.getMonth() + 1) > 10 ? 
+                   (unixTimestamp.getMonth() + 1) : 
+                   '0' + (unixTimestamp.getMonth() + 1));
+          let D = (unixTimestamp.getDate() > 10 ? 
+                   unixTimestamp.getDate() : 
+                   '0' + unixTimestamp.getDate());
+          let toDay = Y + '-' + M + '-' + D;
+          return  toDay;
         }
 
     }
@@ -240,7 +170,7 @@
 ul li{
     display: inline-block;
     margin-left: 13%;
-    color:rgba(64,123,134)
+    color:rgba(64,123,134);
 }
 #turn-page{
     margin-left: 10%;
