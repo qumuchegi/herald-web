@@ -31,7 +31,7 @@
         .key 组队说明
         .value {{wantInfo.description}}
       hr(style="margin: 1%")
-      #apply-container
+      #apply-container(v-if="!hasApplied")
         span(style = "font-size:120%;margin-left: 40%;color:rgb(73, 187, 207)") 申请组队
         div 
           input(placeholder = "您的qq",style="width: 100%",v-model="myqq")
@@ -39,6 +39,8 @@
         div 
           textarea(placeholder="个人简述",rows="5",cols="30",style="width:100%",v-model="myapplytext")
         button(@click="applyJion",style="margin: 10% 25% 2% 40%") 确认申请
+      #applied-warn(v-else)
+          span 已经申请此组队
 
 </template>
 <script>
@@ -51,13 +53,15 @@
                wantID : '',      // 从URL的参数中获取想要查看的召集令的ID，将会用这个ID在后端数据库查询这个召集令的详情
              wantInfo : {},       // 保存查询反悔的召集令的信息
                  myqq : '',
-          myapplytext : ''
+          myapplytext : '',
+           hasApplied : false
           }
       },
       created() {
         this.wantID = this.$route.params.wantid;
         console.log('tid',this.wantID)
         this.getWant(this.wantID);
+        this.Applied()
       },
       methods: {
           async getWant(tid){
@@ -65,6 +69,15 @@
             let res = await api.get('/api/team',postData);
             this.wantInfo = res.data[0];
             console.log('res.data',this.wantInfo)
+          },
+          async Applied(){ 
+            let res = await api.get('/api/team', {type:2,page:1});
+            let {requested} = res;
+            console.log('applied res',requested)
+            console.log('wantId',this.wantID)
+            requested.map(ele => {
+                ele.tid===this.wantID ? this.hasApplied=true : null;
+            });
           },
           publishedData_unixTOnormal(unixtime){
           let unixTimestamp = new Date(unixtime * 1000);
@@ -118,5 +131,9 @@
    }
    #apply-container{
        margin: 5% 10% 5% 10%
+   }
+   #applied-warn{
+       color:rgb(154, 168, 180);
+       padding: 5% 10% 1% 35%
    }
 </style>

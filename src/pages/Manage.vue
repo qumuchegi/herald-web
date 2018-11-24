@@ -130,7 +130,7 @@
                 span(style="background-color:rgba(230,249,253);padding: 3%", 
                      @click="WillmodifyApply(myapplyItem.rid)") 修改
                 span(style="background-color:rgba(230,249,253);padding: 3%;margin-left:10%",@click="WillremoveAppl(myapplyItem.rid)") 撤销
-            hr
+            
         div.applyToMe-item(v-for= "applyTomeItem of applyToMe",v-if= "show==3 ")
             hr
             table 
@@ -336,6 +336,9 @@
 #tab{
      width:100%;
 }
+table{
+    width:100%;
+}
 #tab li{
     display:inline-block;
     padding: 1% 2% 1% 2%;
@@ -394,18 +397,20 @@ h4{
 table{   
     width:96%;
     margin-left: 2%;
-    border-radius: 3%
-    }
+    border-radius: 3%;
+     }
    .block{
-       background-color: rgba(226,250,254);
-       color:#437e88;
+       border-style:solid;
+       border-width: 1px;
+       color:rgba(74,169,192);
        padding-left: 3%;
        border-radius: 3%
    }
    .block1{
        border-color: rgb(89, 210, 231);
-       background-color: rgb(231, 233, 235);
-       color:#437e88;
+       border-style:solid;
+       border-width: 1px;
+       color:rgba(74,169,192);
        padding-left: 3%;
        border-radius: 3%
    }
@@ -419,16 +424,15 @@ table{
        padding-left: 20%
    }
    #description{
-       background-color: rgba(226,250,254);
        padding-right: 3%;
        width:93%;
        margin-left:2%
    }
    .applypass{
-       background-color: rgb(49, 187, 84)
-   }
+       color:green
+    }
    .appplyreject{
-       background-color: coral
+       color:orange
    }
    #remove-dialogue{
     position: fixed;
@@ -465,4 +469,6 @@ table{
 p.value{
     font-size: 50%
 }
+.my-publish{
+ }
 </style>

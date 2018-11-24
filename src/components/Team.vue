@@ -25,27 +25,13 @@
                 span.new(v-if="istimeNew(wantItem.publishedDate)") 新
             div(style= "display: inline-block; padding: 2% 2% 3% 2%")
                 #present-members 
-                    span(style= 'background-color : rgba(102,102,102);color : aliceblue;border-radius : 2px 0 0px 2px') 目前组员
-                    span(style= 'background-color : rgb(71,137,174);color : white')   {{ wantItem.currentPeople.length }}/{{ wantItem.maxPeople }}
+                    span(style= 'background-color : rgba(74,169,192);color : aliceblue;border-radius : 2px 0 0px 2px') 目前组员
+                    span(style= 'border-style:solid;border-width:1px;color :rgba(74,169,192)')   {{ wantItem.currentPeople.length }}/{{ wantItem.maxPeople }}
                 #want-publisher 
-                    span(style= 'background-color : rgba(102,102,102);color : aliceblue;border-radius : 2px 0 0 2px') 发布人
-                    span(style= 'background-color : rgb(125,214,105);color : white')  {{ wantItem.masterName }}
+                    span(style= 'background-color : rgba(74,169,192);color : aliceblue;border-radius : 2px 0 0 2px') 发布人
+                    span(style= 'border-style:solid;border-width:1px;color : rgba(74,169,192)')  {{ wantItem.masterName }}
             button(style= 'float: right; margin-right: 2%',@click= "clickToDetails(wantItem.tid)") 详情
-            button#apply-button(style= 'float: right;margin-right:2%',@click= "isapplyJoin(wantItem.tid,wantItem.masterName)") 申请加入
-            span#hasapplyed-warn(v-if= "isapply")
-                    span(style= "margin-left: 5%; color:rgb(61,123,132)") 填写申请表以便于对方联系你
-                    div 
-                       div  
-                        input(style= " ",placeholder="你的QQ",v-model= "applyFrom_QQ")
-                       hr(style= "margin: 1%")
-                       div 
-                           textarea(v-model= "applyResonText" placeholder="个人简述")
-                    hr(style= "margin: 2%")
-                    button(@click= 'applyJoin(applyWant_ID)',
-                            style= "font-size : 120%; color : deepskyblue;width:100%") 确认申请
-                    button(@click= "isapply= false",
-                            style= "font-size : 120%; color : deepskyblue;margin-top : 3%;width:100%") 取消
-  </template>
+   </template>
 
 <script>
     import api from '@/api'
@@ -69,14 +55,11 @@
               queryStr : '',          // 获取搜索框input 的项目名称
                   page : 1,           // 获取对应页数的组队项
               wantInfo : [],      // post请求到后端所有的召集令后存到这个数组中用于将其列表渲染出来
-               isapply : false,   // 是否申请，申请中点击 “申请加入” 后唤出申请者信息的填写表单，这个 isapply 决定是否渲染这个表单
-            hasapplyed : false,   // 提交申请表单后socket会将申请信息同时发送给召集令的发布者和保存到后端的数据库，如果这个操作过程成功则这个hasapply为true
+             hasapplyed : false,   // 提交申请表单后socket会将申请信息同时发送给召集令的发布者和保存到后端的数据库，如果这个操作过程成功则这个hasapply为true
           applyWant_ID : '',      // 用于在已经渲染出来的召集令列表中获取某一个召集令在数据库的ID，在“确认申请”后用这个ID创建一个申请信息
                                   // 也就是把这个ID当作这条申请信息的一个字段，（这个ID就把申请者和这个召集令联系起来了），
                                   // 以后申请者通过这个ID可以查询到自己申请了哪些召集令及该召集令的动态信息（如新增了哪些成员）
-           applyFrom_QQ : '',      // 申请者的QQ
-           applyResonText:'',     //申请者理由
-        }
+         }
     },
     methods: {
         async getWantsOnPage_Of(type,page) {
@@ -140,21 +123,6 @@
         clickToAdmin(){
             this.$router.push({name: '组队管理'})
         },
-        async applyJoin( id ) {
-            if( this.applyResonText && this.applyFrom_QQ ) 
-            {
-                let res = await api.post('/api/team/registration', 
-                { 
-                    tid:id,
-                    qq:this.applyFrom_QQ,
-                    description:this.applyResonText
-                });
-                console.log('申请res:',res)
-                this.isapply = false;
-            }
-            else
-            Vue.toasted.show('请填写完整');   
-        },
         publishedData_unixTOnormal(unixtime){
           let unixTimestamp = new Date(unixtime * 1000);
           let Y = unixTimestamp.getFullYear();
@@ -185,12 +153,13 @@
 ul li{
     display: inline-block;
     margin-left: 13%;
-    color:rgba(64,123,134);
+    font-weight:200%;
+    color:rgba(74,169,192);
 }
 .isadmin{
     display: inline-block;
     margin-left: 7%;
-    color:rgba(64,123,134)
+    color:rgba(74,169,192)
 }
 #turn-page{
     margin-left: 10%;
@@ -235,7 +204,6 @@ ul li{
 }
 #want-publisher{
     border-radius: 3px;
-    background-color: antiquewhite;
     display: inline-block
 }
 #query-input input{
