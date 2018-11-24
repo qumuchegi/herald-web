@@ -57,8 +57,8 @@
                    tr
                      input(placeholder="mypublishItem.qq",v-model="modified_qq",style="width: 80%",v-if="isModify_pub_start===index")
               tr 
-                table 
-                   td.block 
+                table(style="width:100%;margin:0;padding:0;border-width:0")
+                   td.block
                        tr.key 发布时间
                        tr.value {{publishedData_unixTOnormal(mypublishItem.publishedDate)}}
                    td.block 
@@ -109,7 +109,7 @@
                     tr.key 申请时间
                     tr.value {{publishedData_unixTOnormal(myapplyItem.applicationDate)}}
                 tr 
-                  table   
+                  table(style="width:100%;margin:0;padding:0;border-width:0")
                     td.block 
                         span.key 个人简述
                         p.value {{myapplyItem.description}}
@@ -404,7 +404,7 @@ table{
        border-width: 1px;
        color:rgba(74,169,192);
        padding-left: 3%;
-       border-radius: 3%
+       border-radius: 3px
    }
    .block1{
        border-color: rgb(89, 210, 231);
@@ -412,7 +412,7 @@ table{
        border-width: 1px;
        color:rgba(74,169,192);
        padding-left: 3%;
-       border-radius: 3%
+       border-radius: 3px
    }
    .key{
        color: rgb(154, 168, 180);

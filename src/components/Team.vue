@@ -25,11 +25,11 @@
                 span.new(v-if="istimeNew(wantItem.publishedDate)") 新
             div(style= "display: inline-block; padding: 2% 2% 3% 2%")
                 #present-members 
-                    span(style= 'background-color : rgba(74,169,192);color : aliceblue;border-radius : 2px 0 0px 2px') 目前组员
-                    span(style= 'border-style:solid;border-width:1px;color :rgba(74,169,192)')   {{ wantItem.currentPeople.length }}/{{ wantItem.maxPeople }}
+                    span(style= 'padding-top:1%;padding-bottom:1%;background-color : rgba(74,169,192);color : aliceblue;border-radius : 2px 0 0px 2px') 目前组员
+                    span(style= 'border-style:solid;border-width:1px;border-radius:0 3px 3px 0;color :rgba(74,169,192)')   {{ wantItem.currentPeople.length }}/{{ wantItem.maxPeople }}
                 #want-publisher 
-                    span(style= 'background-color : rgba(74,169,192);color : aliceblue;border-radius : 2px 0 0 2px') 发布人
-                    span(style= 'border-style:solid;border-width:1px;color : rgba(74,169,192)')  {{ wantItem.masterName }}
+                    span(style= 'padding-top:1%;padding-bottom:1%;background-color : rgba(74,169,192);color : aliceblue;border-radius : 2px 0 0 2px') 发布人
+                    span(style= 'border-style:solid;border-width:1px;border-radius:0 3px 3px 0;color : rgba(74,169,192)')  {{ wantItem.masterName }}
             button(style= 'float: right; margin-right: 2%',@click= "clickToDetails(wantItem.tid)") 详情
    </template>
 

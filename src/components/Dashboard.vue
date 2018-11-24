@@ -18,7 +18,8 @@
         .function 轮播管理
       router-link(to='/admin/activity' v-if='user.admin.publicity')
         .function 活动管理
-
+      router-link(to='/admin/team' v-if='user.admin.publicity')
+        .function 组队管理
     .dashboard-container(v-if='user')
       item(name='余额' 
         :value='card && card.info && card.info.balance' 
