@@ -121,7 +121,7 @@
                     tr.value {{myapplyItem.status===0 ? '申请当中' : myapplyItem.status===1 ? '申请成功' :myapplyItem.status===2 ? '申请被拒绝' :null}}
                 tr 
                   td.block 
-                    span 团队详情
+                    span(@click="clickToDetails(myapplyItem.tid)") 团队详情
                     span(v-if="myapplyItem.status===4") 此团队已经被弃置
                   td.block 
                     tr.key 通过或拒绝的理由
@@ -165,11 +165,12 @@
 <script>
     import api from '@/api';
     import Vue from 'vue';
-    
+ 
     export default {
 
         props: [ 'user' ],
         data() {
+
             return {
                          show : 1,        // 默认渲染“我的teams”
                     mypublish : [],       // 保存后端查询返回的团队信息（并没有独立的团队信息数据库，而是从召集令中提取）主要是团队成员变化都会变化在召集令的数据库里
@@ -196,12 +197,14 @@
          modified_description : '',
                    //////////用于修改申请时的中间字段
    modified_description_apply : '',
-            modified_qq_apply : ''
+            modified_qq_apply : '',
+          
                 }
        },
        created() {
-           this.getMy_published_apply();   
-       },
+           this.getMy_published_apply();  
+           console.log(team.methods)
+        },
        methods: {
             async getMy_published_apply() {
                 console.log('正在请求type=2')
@@ -239,7 +242,9 @@
                 let toDay = Y + '-' + M + '-' + D;
                 return  toDay;
             },
-
+            clickToDetails(tid){
+                this.$router.push({name: '召集令详情', params: {wantid:tid}})
+            },
             willremovePub(tid){
                 this.isRemove_publish = true;
                 this.id = tid;
@@ -428,11 +433,23 @@ table{
        width:93%;
        margin-left:2%
    }
-   .applypass{
-       color:green
+   .applypass .block{
+       color:rgb(71, 197, 71)
     }
-   .appplyreject{
+    .applypass .block .value{
+        color:rgb(71, 197, 71)     
+    }
+    .applypass .block1 .value{
+        color:rgb(71, 197, 71)  
+    }
+   .appplyreject .block{
        color:orange
+   }
+   .appplyreject .block .value{
+    color:orange    
+   }
+   .appplyreject .block1 .value{
+    color:orange    
    }
    #remove-dialogue{
     position: fixed;
