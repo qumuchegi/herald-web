@@ -1,11 +1,12 @@
 <template lang="pug">
     #body 
         ul 
-          li(@click= "clickToSearch(isQuery)") 搜team
-          li(@click= "clickToFindMate") 招队员
-          li(@click= "clickToManage") 我的
+          li(@click= "clickToSearch(isQuery)",:class="{isadmin:user.cardnum==='213163480'}") 搜team
+          li(@click= "clickToFindMate",:class="{isadmin:user.cardnum==='213163480'}") 招队员
+          li(@click= "clickToManage",:class="{isadmin:user.cardnum==='213163480'}") 我的
+          li.isadmin(@click= "clickToAdmin",v-if= "user.cardnum==='213163480'") 管理者
         p#query-input(v-if= 'isQuery')
-          input(v-model= 'queryStr',placeholder= "输入竞赛名/发起人名或一卡通")
+          input(v-model= 'queryStr',placeholder= "输入竞赛名/发起人名/一卡通")
           button(@click= "getWantsOnPage_Of(3,page)") 搜索
           button(@click= 'cancelQuery') 取消
         #turn-page 
@@ -13,24 +14,24 @@
           span(v-if= "page===1",style="color: white") 占位符
           span(style="margin-left: 28.5%") 第{{page}}页
           span#next-page(v-if= "wantInfo.length===6",@click= "getNextPage" ) 下一页
-        div(@click="getWantsOnPage_Of(1,page)",
-            style="border-radius: 2%;width: 14%;margin-top: 0.6% ;margin-left:42%;margin-bottom: 0%;padding:1% 2% 1% 2%;background-color: rgba(110, 218, 226, 0.705)") 刷新列表
+        div#fresh(@click="getWantsOnPage_Of(1,page)") 刷新列表
         div#nomore(v-if= "wantInfo.length===0") 无更多召集令
         #want-container 
           #want-item(v-for= "wantItem in wantInfo",v-if="wantInfo.length!==0",:key= "wantItem.id" )
             hr.divider 
             #want-project-title 
                 span {{ wantItem.projectName }}
-                span(style="float: right;color:rgb(188, 199, 199)") 发布于{{publishedData_unixTOnormal( wantItem.publishedDate )}}
+                span(style="float: right;color:rgb(188, 199, 199)") 发布于{{publishedData_unixTOnormal( wantItem.publishedDate ).YMD}}
+                span.new(v-if="istimeNew(wantItem.publishedDate)") 新
             div(style= "display: inline-block; padding: 2% 2% 3% 2%")
                 #present-members 
                     span(style= 'background-color : rgba(102,102,102);color : aliceblue;border-radius : 2px 0 0px 2px') 目前组员
                     span(style= 'background-color : rgb(71,137,174);color : white')   {{ wantItem.currentPeople.length }}/{{ wantItem.maxPeople }}
                 #want-publisher 
-                    span(style= 'background-color : rgba(102,102,102);color : aliceblue;border-radius : 2px') 发布人
+                    span(style= 'background-color : rgba(102,102,102);color : aliceblue;border-radius : 2px 0 0 2px') 发布人
                     span(style= 'background-color : rgb(125,214,105);color : white')  {{ wantItem.masterName }}
             button(style= 'float: right; margin-right: 2%',@click= "clickToDetails(wantItem.tid)") 详情
-            button#apply-button(style= 'float: right;',@click= "isapplyJoin(wantItem.tid,wantItem.masterName)") 申请加入
+            button#apply-button(style= 'float: right;margin-right:2%',@click= "isapplyJoin(wantItem.tid,wantItem.masterName)") 申请加入
             span#hasapplyed-warn(v-if= "isapply")
                     span(style= "margin-left: 5%; color:rgb(61,123,132)") 填写申请表以便于对方联系你
                     div 
@@ -54,9 +55,14 @@
         props: [ 'user' ],
         created() {
            this.getWantsOnPage_Of(1,this.page);
+           let now = new Date();
+            this.now.Y = now.getFullYear();
+            this.now.M = now.getMonth();
+            this.now.D = now.getDate();
         },
        data() {
            return {
+                   now : {},
                showTab : 1,        
                   type :1,            //搜索类，1 获取所有组队，3 搜索特定组队
                isQuery : false,       // 搜索框是否渲染的状态，false默认不渲染
@@ -131,6 +137,9 @@
         clickToDetails(tid){
             this.$router.push({name: '召集令详情', params: {wantid:tid}})
         },
+        clickToAdmin(){
+            this.$router.push({name: '组队管理'})
+        },
         async applyJoin( id ) {
             if( this.applyResonText && this.applyFrom_QQ ) 
             {
@@ -155,9 +164,15 @@
           let D = (unixTimestamp.getDate() > 10 ? 
                    unixTimestamp.getDate() : 
                    '0' + unixTimestamp.getDate());
-          let toDay = Y + '-' + M + '-' + D;
-          return  toDay;
-        }
+           return  {Y,M,D,YMD:`${Y}-${M}-${D}`};
+        },
+        istimeNew(unixtime){//判断是否是新want标准是距离天数<1
+                let {Y,M,D} = this.publishedData_unixTOnormal(unixtime);
+                return (this.now.Y > Y) ? (this.now.M > M ? false : (12-M)>=1 ? false : (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true)
+                                        : this.now.M > M ? (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true 
+                                        : this.now.D-D > 1 ? false : true
+            },
+
 
     }
 }
@@ -171,6 +186,11 @@ ul li{
     display: inline-block;
     margin-left: 13%;
     color:rgba(64,123,134);
+}
+.isadmin{
+    display: inline-block;
+    margin-left: 7%;
+    color:rgba(64,123,134)
 }
 #turn-page{
     margin-left: 10%;
@@ -216,7 +236,7 @@ ul li{
 #want-publisher{
     border-radius: 3px;
     background-color: antiquewhite;
-   
+    display: inline-block
 }
 #query-input input{
     width:73%;
@@ -231,12 +251,22 @@ ul li{
 }
 #present-members{
     display: inline-block;
-
 }
-#want-publisher{
-   display: inline-block;
+.new{
+    background-color: crimson;
+    color:aliceblue;
+    border-radius: 40%;
+    margin-left: 10%;
+    padding: 0.3%;
+    float:right
 }
-#apply-button{
-     margin-right: 2%
+#fresh{
+    border-radius: 2%;
+    width: 14%;
+    margin-top: 0.6% ;
+    margin-left:42%;
+    margin-bottom: 0%;
+    padding:1% 2% 1% 2%;
+    background-color: rgba(110, 218, 226, 0.705)
 }
 </style>

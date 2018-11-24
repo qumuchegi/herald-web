@@ -24,6 +24,7 @@ import Curriculum from '@/pages/Curriculum'
 import TeamMember from '@/pages/Teammember'
 import Manage from '@/pages/Manage'
 import Wantdetails from '@/pages/Wantdetails'
+import AdminTeam from '@/pages/admin/Team'
 
 Vue.use(Router)
 
@@ -127,6 +128,11 @@ export default new Router({
       path: '/admin/activity',
       name: '活动管理',
       component: AdminActivity
+    },
+    {
+      path: '/admin/team',
+      name: '组队管理',
+      component: AdminTeam
     },
     {
       path: '/screensaver',
