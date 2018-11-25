@@ -76,7 +76,7 @@
             console.log('applied res',requested)
             console.log('wantId',this.wantID)
             requested.map(ele => {
-                ele.tid===this.wantID && ele.status!==3 ? this.hasApplied=true : null;
+                ele.tid===this.wantID && ele.status!==3 && ele.status!==2? this.hasApplied=true : null;
             });
           },
           publishedData_unixTOnormal(unixtime){
