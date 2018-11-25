@@ -40,11 +40,15 @@
                             deadLine : '',                   //召集令截止时间,
                          description : '',                     //召集令描述
                          isPublished : false ,                 //后端有无保存成功召集令 后端数据库无此字段
-                hasPublishedSameProj : false                   //后端是否查询到之前已经有相同竞赛的申请，后端数据库无此字段
+                hasPublishedSameProj : false ,                  //后端是否查询到之前已经有相同竞赛的申请，后端数据库无此字段
+                                 now : {}
             }
        },
        created() {
-
+            let now = new Date();
+            this.now.Y = now.getFullYear();
+            this.now.M = now.getMonth();
+            this.now.D = now.getDate();
        },
        methods: {
            //向后端发送填好的召集令信息，后端接受后会保存
@@ -58,7 +62,10 @@
                            description : this.description,  
 
                         } ;
-                console.log(postdata.deadLine);
+                 if(isNaN(this.maxPeople)){
+                    return Vue.toasted.show('预期招人数不是有效数字')
+                }
+                
                 if( this.qq && 
                    this.teamName && 
                    this.projectName && 
@@ -66,10 +73,14 @@
                    this.deadLine&&
                    this.description )
                 {
-                    let res =  await api.post('/api/team', postdata);
-                    //后端召集令入库后给前端的响应
-                    console.log('res',res)
-                    res.status===0 ? this.isPublished=true : this.hasPublishedSameProj=true;
+                    try {
+                        let res =  await api.post('/api/team', postdata);
+                        //后端召集令入库后给前端的响应
+                        console.log('res',res)
+                        res.status===0 ? this.isPublished=true : this.hasPublishedSameProj=true;
+                    }catch(err){
+                        Vue.toasted.show(err)
+                    }
                 }else{
                 Vue.toasted.show('请填写完整！！！')
                 }
@@ -80,11 +91,14 @@
 <style scoped>
 h2{
     text-align: center;
-    color:rgb(74,169,192);
+    color:rgb(74, 169, 192);
 }
 #call-form{
     padding-left: 10%;
     padding-right: 10%
+}
+#call-form input{
+    border: 1px solid rgb(74,169,192,0.4)
 }
 #publish-button{
     margin-left: 34%;
@@ -92,30 +106,30 @@ h2{
     padding: 1% 10% 1% 10%;
 }
 #publisher-name{
-    margin-left: 4%;
+    margin-left: 7%;
 
 }
 #publisher-stunumber{
     margin-left: 8%;
 }
 #publisher-QQ{
-    margin-left: 10%;
+    margin-left: 22%;
 }
 #publisher-comptation{
-    margin-left: 8%;
+    margin-left: 20%;
 }
 #publisher-num{
-    margin-left: 0.7%;
-    width:20%
-}
-#publisher-more{
-    margin-left: 4%;
+    margin-left: 3%;
+ }
+#publish-more{
+    margin-left: 12%;
+    border: 1px solid rgb(74,169,192,0.4) 
 }
 hr{
     margin: 2%;
 }
 .deadLine{
-    width: 50%
+    margin-left: 11.7%
 }
 #published-alert,#hassamepublish{
     text-align : center;

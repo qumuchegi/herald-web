@@ -21,7 +21,7 @@
             hr.divider 
             #want-project-title 
                 span {{ wantItem.projectName }}
-                span(style="float: right;color:rgb(188, 199, 199)") 发布于{{publishedData_unixTOnormal( wantItem.publishedDate ).YMD}}
+                span(style="float: right;color:rgb(188, 199, 199)") 发布于{{unixTOnormal( wantItem.publishedDate ).YMD}}
                 span.new(v-if="istimeNew(wantItem.publishedDate)") 新
             div(style= "display: inline-block; padding: 2% 2% 3% 2%")
                 #present-members 
@@ -50,12 +50,12 @@
            return {
                    now : {},
                showTab : 1,        
-                  type :1,            //搜索类，1 获取所有组队，3 搜索特定组队
+                  type : 1,            //搜索类，1 获取所有组队，3 搜索特定组队
                isQuery : false,       // 搜索框是否渲染的状态，false默认不渲染
               queryStr : '',          // 获取搜索框input 的项目名称
                   page : 1,           // 获取对应页数的组队项
               wantInfo : [],      // post请求到后端所有的召集令后存到这个数组中用于将其列表渲染出来
-             hasapplyed : false,   // 提交申请表单后socket会将申请信息同时发送给召集令的发布者和保存到后端的数据库，如果这个操作过程成功则这个hasapply为true
+            hasapplyed : false,   // 提交申请表单后socket会将申请信息同时发送给召集令的发布者和保存到后端的数据库，如果这个操作过程成功则这个hasapply为true
           applyWant_ID : '',      // 用于在已经渲染出来的召集令列表中获取某一个召集令在数据库的ID，在“确认申请”后用这个ID创建一个申请信息
                                   // 也就是把这个ID当作这条申请信息的一个字段，（这个ID就把申请者和这个召集令联系起来了），
                                   // 以后申请者通过这个ID可以查询到自己申请了哪些召集令及该召集令的动态信息（如新增了哪些成员）
@@ -123,7 +123,8 @@
         clickToAdmin(){
             this.$router.push({name: '组队管理'})
         },
-        publishedData_unixTOnormal(unixtime){
+        unixTOnormal(unixtime){
+          if(typeof(unixtime)==='string')return unixtime;
           let unixTimestamp = new Date(unixtime * 1000);
           let Y = unixTimestamp.getFullYear();
           let M = ((unixTimestamp.getMonth() + 1) > 10 ? 
@@ -135,13 +136,24 @@
            return  {Y,M,D,YMD:`${Y}-${M}-${D}`};
         },
         istimeNew(unixtime){//判断是否是新want标准是距离天数<1
-                let {Y,M,D} = this.publishedData_unixTOnormal(unixtime);
-                return (this.now.Y > Y) ? (this.now.M > M ? false : (12-M)>=1 ? false : (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true)
-                                        : this.now.M > M ? (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true 
+                let {Y,M,D} = this.unixTOnormal(unixtime);
+                return (this.now.Y > Y) ? 
+                                        (this.now.M > M ? 
+                                         false 
+                                         : 
+                                         (12-M)>=1 ? 
+                                         false 
+                                         : 
+                                         (31-D+(this.now.M-1)*31+this.now.D)>1 ? 
+                                         false
+                                         :
+                                         true
+                                        )
+                                        :
+                                        this.now.M > M ? 
+                                        (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true 
                                         : this.now.D-D > 1 ? false : true
             },
-
-
     }
 }
 </script>
@@ -221,7 +233,7 @@ ul li{
     display: inline-block;
 }
 .new{
-    background-color: crimson;
+    background-color: rgb(244,211,127);
     color:aliceblue;
     border-radius: 40%;
     margin-left: 10%;
@@ -230,11 +242,10 @@ ul li{
 }
 #fresh{
     border-radius: 2%;
-    width: 14%;
     margin-top: 0.6% ;
-    margin-left:42%;
+    margin-left:41.4%;
     margin-bottom: 0%;
     padding:1% 2% 1% 2%;
-    background-color: rgba(110, 218, 226, 0.705)
-}
+    color: rgb(74,169,192)
+ }
 </style>

@@ -76,17 +76,18 @@
             console.log('applied res',requested)
             console.log('wantId',this.wantID)
             requested.map(ele => {
-                ele.tid===this.wantID ? this.hasApplied=true : null;
+                ele.tid===this.wantID && ele.status!==3 ? this.hasApplied=true : null;
             });
           },
           publishedData_unixTOnormal(unixtime){
-          let unixTimestamp = new Date(unixtime * 1000);
-          let Y = unixTimestamp.getFullYear();
-          let M = ((unixTimestamp.getMonth() + 1) > 10 ? 
+            if(typeof(unixtime)==='string')return unixtime;
+            let unixTimestamp = new Date(unixtime * 1000);
+            let Y = unixTimestamp.getFullYear();
+            let M = ((unixTimestamp.getMonth() + 1) > 10 ? 
                    (unixTimestamp.getMonth() + 1) : '0' + (unixTimestamp.getMonth() + 1));
-          let D = (unixTimestamp.getDate() > 10 ? unixTimestamp.getDate() : '0' + unixTimestamp.getDate());
-          let toDay = Y + '-' + M + '-' + D;
-          return  toDay;
+            let D = (unixTimestamp.getDate() > 10 ? unixTimestamp.getDate() : '0' + unixTimestamp.getDate());
+            let toDay = Y + '-' + M + '-' + D;
+            return  toDay;
         },
         async applyJion(){
             if(this.myapplytext && this.myqq){
