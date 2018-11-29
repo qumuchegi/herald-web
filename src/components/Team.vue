@@ -6,9 +6,13 @@
           li(@click= "clickToManage",:class="{isadmin:user.cardnum==='213163480'}") 我的
           li.isadmin(@click= "clickToAdmin",v-if= "user.cardnum==='213163480'") 管理者
         p#query-input(v-if= 'isQuery')
-          input(v-model= 'queryStr',placeholder= "输入竞赛名/发起人名/一卡通")
-          button(@click= "getWantsOnPage_Of(3,page)") 搜索
-          button(@click= 'cancelQuery') 取消
+            input(v-model= 'queryStr',placeholder= "竞赛名/发起人名/一卡通")
+            select#querymodel( @change="changeQmodel") 
+                option(value="projectName" selected) 竞赛名
+                option(value="masterName") 发起人
+                option(value="cardnum") 一卡通
+            button(@click= "getWantsOnPage_Of(3,page)") 搜索
+            button(@click= 'cancelQuery') 取消
         #turn-page 
           span#ast-page(v-if= "page > 1",@click= "getLastPage") 上一页
           span(v-if= "page===1",style="color: white") 占位符
@@ -40,6 +44,7 @@
     export default{
         props: [ 'user' ],
         created() {
+           this.queryModel = 'projectName';
            this.getWantsOnPage_Of(1,this.page);
            let now = new Date();
             this.now.Y = now.getFullYear();
@@ -59,6 +64,7 @@
           applyWant_ID : '',      // 用于在已经渲染出来的召集令列表中获取某一个召集令在数据库的ID，在“确认申请”后用这个ID创建一个申请信息
                                   // 也就是把这个ID当作这条申请信息的一个字段，（这个ID就把申请者和这个召集令联系起来了），
                                   // 以后申请者通过这个ID可以查询到自己申请了哪些召集令及该召集令的动态信息（如新增了哪些成员）
+            queryModel : ''       // 搜索模式
          }
     },
     methods: {
@@ -70,7 +76,12 @@
                     Vue.toasted.show('请输入搜索竞赛')
                 }else{
                     this.type = 3;
-                    let postData= { type:3,  page: page, param:JSON.stringify({projectName:queryStr})  };
+                    let querymodelMap = new Map();
+                    querymodelMap.set(this.queryModel,queryStr);
+                    let querymodelObj={};
+                    for (let [queryModel,queryStr] of querymodelMap)
+                    querymodelObj[queryModel]=queryStr;
+                    let postData= { type:3,  page: page, param:JSON.stringify(querymodelObj)};
                     console.log(postData)
                      let res= await api.get('/api/team', postData)
                      this.wantInfo = res.data;
@@ -99,6 +110,7 @@
         },
         cancelQuery() {
             this.type = 1;
+            this.queryModel = 'projectName'
             //this.page =1;
             this.getWantsOnPage_Of(1,this.page);
             this.isQuery = false;
@@ -154,6 +166,11 @@
                                         (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true 
                                         : this.now.D-D > 1 ? false : true
             },
+            changeQmodel(){
+                let that = document.getElementById('querymodel')
+                this.queryModel = that.options[that.selectedIndex].value;
+                console.log(this.queryModel)
+            }
     }
 }
 </script>
@@ -219,11 +236,23 @@ ul li{
     display: inline-block
 }
 #query-input input{
-    width:73%;
+    width:50%;
     margin-left:1%;
     margin-top: 1%;
     margin-right: 0;
-    background-color: azure
+    margin-bottom: 1.7%;
+    padding-top: 1.6%;
+    background-color: white;
+    border-bottom: solid rgb(74,169,192) 1px;
+    border-radius: 0
+}
+#querymodel{
+    background-color: white;
+    color:rgb(74,169,192);
+    padding: 2% 1% 2% 1%;
+    margin-left: 0;
+    border-style: none;
+    border-width: 0
 }
 #query-input button{
     padding: 1.5% 2% 1.5% 2%;

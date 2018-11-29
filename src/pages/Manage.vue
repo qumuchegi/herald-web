@@ -15,7 +15,7 @@
           button(@click="removeApply(id,true)",style="margin-top:4%;width:100%") 彻底删除
           button(@click="cancelremoveApply(id)",style="margin-top: 4%;width:100%") 取消  
       #modify-apply(v-if="isModify_apply_start") 
-          table 
+          table
              tr 
                span qq
                input(v-model="modified_qq_apply",style="width:60%")
@@ -415,6 +415,7 @@ table{
     border-radius: 3%;
      }
    .block{
+       margin:0;
        border-style:solid;
        border-width: 1px;
        color:rgba(74,169,192);
