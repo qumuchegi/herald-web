@@ -219,12 +219,21 @@ ul li{
 }
 #want-container{
     margin-top: 0%;
-    padding-bottom: 0%
+    padding-bottom: 0%;
+    animation: wants 1s;
+}
+@keyframes wants{
+    0% {opacity: 0;}
+    20% {opacity: 0.1;}
+    30% {opacity: 0.4;}
+    50% {opacity: 0.7;}
+    70% {opacity: 0.8;}
+    100% {opacity: 1;}
+    
 }
 #want-item{
     border-radius: 3px;
     margin: 2% ;
-
 }
 #want-project-title{
     color:rgb(36, 110, 116);
@@ -234,6 +243,10 @@ ul li{
 #want-publisher{
     border-radius: 3px;
     display: inline-block
+}
+#query-input{
+    
+  
 }
 #query-input input{
     width:50%;

@@ -1,9 +1,9 @@
 <template lang = "pug">
     div 
       ul#tab 
-          li(:class="{selected: show===1}",@click= "show=1") 我的发布
-          li(:class="{selected: show===2}",@click= "show=2") 我的申请
-          li(:class="{selected: show===3}",@click= "show=3") 接收申请
+          li(:class="{selected: show===1}",@click= "show=1") 我的申请
+          li(:class="{selected: show===2}",@click= "show=2") 接收申请
+          li(:class="{selected: show===3}",@click= "show=3") 我的发布
       #remove-dialogue(v-if="isRemove_publish")
           h3 是否删除此召集令？
           button(@click="removePublish(id,true)",style="width:100%;margin:2%") 彻底删除
@@ -29,77 +29,17 @@
              span(style="background-color:rgba(230,249,253);padding: 3%;margin-left: 3%;width:7%", 
                   @click="submitmodifyApply(id)",
                   v-if="isModify_apply_start") 完成修改
-      #container 
-        div.my-publish(v-for= "(mypublishItem,index) of mypublish",v-if="show==1")
-            hr
-            table 
-              tr 
-                td.block1 
-                   tr.key 竞赛类别
-                   tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.projectName }}
-                   p(v-if="isModify_pub_start!==index",style="color:rgba(96,99,104);margin-left:2%;font-size:70%") {{mypublishItem.status===5?"管理员已删除":mypublishItem.status===4?'首页已隐藏':mypublishItem.status===1?'过期':'正常发布'}}
-                   p(v-if='mypublishItem.status===5',style="color:rgba(123,23,45);font-size:60%") 管理员：{{mypublishItem.msg}}
-                   tr
-                     input(v-model="modified_peojectName=mypublishItem.projectName",style="width: 80%",v-if="isModify_pub_start===index")                  
-                td.block1 
-                   tr.key 团队名
-                   tr.value(v-if="isModify_pub_start!==index") {{mypublishItem.teamName}}
-                   tr
-                     input(v-model="modified_teamName=mypublishItem.teamName",style="width: 80%",v-if="isModify_pub_start===index")
-              tr 
-                td.block 
-                   tr.key 发起人及组员
-                   tr.value {{ mypublishItem.masterName }}（发起人）
-                   tr.value(v-for="one of mypublishItem.currentPeople", 
-                            v-if="one.name!==mypublishItem.masterName") {{ one.name }}  
-                td.block 
-                   tr.key 发起人qq
-                   tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.qq }}
-                   tr
-                     input(v-model="modified_qq=mypublishItem.qq",style="width: 80%",v-if="isModify_pub_start===index")
-              tr 
-                table(style="width:100%;margin:0;padding:0;border-width:0")
-                   td.block
-                       tr.key 发布时间
-                       tr.value {{unixTOnormal(mypublishItem.publishedDate)}}
-                   td.block 
-                       tr.key 截止时间
-                       tr.value(v-if="isModify_pub_start!==index") {{unixTOnormal(mypublishItem.deadLine)}}
-                       tr
-                         input(type='date',v-model="modified_deadLine",style="width: 80%",v-if="isModify_pub_start===index")
-                td.block 
-                   tr.key 预期招人
-                   tr.value(v-if="isModify_pub_start!==index") {{mypublishItem.maxPeople}}
-                   tr 
-                     input(v-model="modified_maxPeople=mypublishItem.maxPeople",style="width: 80%",v-if="isModify_pub_start===index")
-            #description
-                .key 组队说明
-                p.value(v-if="isModify_pub_start!==index",style="font-size:50%") {{mypublishItem.description}}
-                textarea(v-model="modified_description=mypublishItem.description",style="width: 100%;margin-bottom:4%",rows="6",v-if="isModify_pub_start===index") 
-            div(style="margin: 5% 20% 5% 36%")
-                  button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
-                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%", 
-                        @click="WillmodifyPub(mypublishItem.tid,index)") 修改
-                  button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
-                         style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                         @click="willremovePub(mypublishItem.tid)") 删除
-                  span(v-if="isModify_pub_start===index",
-                       style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                       @click="cancelmodifyPublish(mypublishItem.tid,index)") 取消修改 
-                  span(v-if="isModify_pub_start===index", 
-                       style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                       @click="submitModify_pub(mypublishItem.tid)") 修改完成    
-         
+      #container          
         div(v-for= "myapplyItem of myapplys", 
-            v-if= "show==2",  
-            :class="[{applypass: myapplyItem.status===1},{appplyreject: myapplyItem.status===2}]")
+            v-if= "show==1",  
+            :class="[{applypass: myapplyItem.status===1},{appplyreject: myapplyItem.status===1}]")
             hr
             table 
                 tr 
                   td.block1 
                     tr.key 申请竞赛类
                     tr.value {{ myapplyItem.projectName }}
-                  td.block1
+                  td.block1 
                     tr.key 团队名
                     tr.value {{myapplyItem.teamName}}
                 tr 
@@ -132,7 +72,7 @@
                      @click="WillmodifyApply(myapplyItem.rid)") 修改
                 button(style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",@click="WillremoveAppl(myapplyItem.rid)") 撤销
             
-        div.applyToMe-item(v-for= "applyTomeItem of applyToMe",v-if= "show==3 && applyTomeItem.status!==3")
+        div.applyToMe-item(v-for= "applyTomeItem of applyToMe",v-if= "show==2 && applyTomeItem.status!==2")
             hr
             table 
                 tr 
@@ -161,7 +101,66 @@
                     div(style="margin-top: 5%")
                       button(style="margin-left: 10%",@click="pass(applyTomeItem.rid,text)") 给予通过
                       button(style="margin-left: 10%",@click="reject(applyTomeItem.rid,text)") 给予拒绝
-        
+        div.my-publish(v-for= "(mypublishItem,index) of mypublish",v-if="show==3")
+            hr
+            table 
+                tr 
+                 td.block1 
+                    tr.key 竞赛类别
+                    tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.projectName }}
+                    p(v-if="isModify_pub_start!==index",style="color:rgba(96,99,104);margin-left:2%;font-size:70%") {{mypublishItem.status===5?"管理员已删除":mypublishItem.status===4?'首页已隐藏':mypublishItem.status===1?'过期':'正常发布'}}
+                    p(v-if='mypublishItem.status===5',style="color:rgba(123,23,45);font-size:60%") 管理员：{{mypublishItem.msg}}
+                    tr
+                    input(v-model="modified_peojectName=mypublishItem.projectName",style="width: 80%",v-if="isModify_pub_start===index")                  
+                 td.block1 
+                    tr.key 团队名
+                    tr.value(v-if="isModify_pub_start!==index") {{mypublishItem.teamName}}
+                    tr
+                    input(v-model="modified_teamName=mypublishItem.teamName",style="width: 80%",v-if="isModify_pub_start===index")
+                tr 
+                 td.block 
+                    tr.key 发起人及组员
+                    tr.value {{ mypublishItem.masterName }}（发起人）
+                    tr.value(v-for="one of mypublishItem.currentPeople", 
+                            v-if="one.name!==mypublishItem.masterName") {{ one.name }}  
+                 td.block 
+                    tr.key 发起人qq
+                    tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.qq }}
+                    tr
+                    input(v-model="modified_qq=mypublishItem.qq",style="width: 80%",v-if="isModify_pub_start===index")
+                tr 
+                 table(style="width:100%;margin:0;padding:0;border-width:0")
+                    td.block
+                        tr.key 发布时间
+                        tr.value {{unixTOnormal(mypublishItem.publishedDate)}}
+                    td.block 
+                        tr.key 截止时间
+                        tr.value(v-if="isModify_pub_start!==index") {{unixTOnormal(mypublishItem.deadLine)}}
+                        tr
+                        input(type='date',v-model="modified_deadLine",style="width: 80%",v-if="isModify_pub_start===index")
+                 td.block 
+                    tr.key 预期招人
+                    tr.value(v-if="isModify_pub_start!==index") {{mypublishItem.maxPeople}}
+                    tr 
+                    input(v-model="modified_maxPeople=mypublishItem.maxPeople",style="width: 80%",v-if="isModify_pub_start===index")
+            #description
+                 .key 组队说明
+                 p.value(v-if="isModify_pub_start!==index",style="font-size:50%") {{mypublishItem.description}}
+                 textarea(v-model="modified_description=mypublishItem.description",style="width: 98%;margin-bottom:4%;margin-left:3%",rows="5",v-if="isModify_pub_start===index") 
+            div(style="margin: 5% 20% 5% 36%")
+                  button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
+                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%", 
+                        @click="WillmodifyPub(mypublishItem.tid,index)") 修改
+                  button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
+                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
+                        @click="willremovePub(mypublishItem.tid)") 删除
+                  span(v-if="isModify_pub_start===index",
+                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
+                        @click="cancelmodifyPublish(mypublishItem.tid,index)") 取消修改 
+                  span(v-if="isModify_pub_start===index", 
+                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
+                        @click="submitModify_pub(mypublishItem.tid)") 修改完成    
+
 </template>
 <script>
     import api from '@/api';
@@ -413,50 +412,48 @@ table{
     width:96%;
     margin-left: 2%;
     border-radius: 3%;
-     }
-   .block{
-       margin:0;
-       border-style:solid;
-       border-width: 1px;
-       color:rgba(74,169,192);
-       padding-left: 3%;
-       border-radius: 3px
-   }
-   .block1{
-       border-color: rgb(89, 210, 231);
-       border-style:solid;
-       border-width: 1px;
-       color:rgba(74,169,192);
-       padding-left: 3%;
-       border-radius: 3px
-   }
-   .key{
-       color: rgb(154, 168, 180);
-       padding-left: 3%
-   }
-   .value{
-       color: rgba(67,126,136);
-       font-size: 110%;
-       padding-left: 20%
-   }
-   #description{
-       padding-right: 3%;
-       width:93%;
-       margin-left:2%
-   }
-   .applypass .block{
-     }
-    .applypass .block .value{
-     }
-    .applypass .block1 .value{
-     }
-   .appplyreject .block{
+}
+.block{
+    background-color:rgba(237,237,237,0.5);
+     
+    color:rgba(74,169,192);
+    padding-left: 3%;
+  
+}
+.block1{
+    background-color:rgba(237,237,237);
+    color:rgba(74,169,192);
+    padding-left: 3%;
+     
+}
+.key{
+    color: rgb(154, 168, 180);
+    padding-left: 3%
+}
+.value{
+    color: rgba(67,126,136);
+    font-size: 110%;
+    padding-left: 20%
+}
+#description{
+    padding-right: 3%;
+    width:93%;
+    margin-left:2%;
+    background-color:rgba(237,237,237,0.5)
+}
+.applypass .block{
     }
-   .appplyreject .block .value{
+.applypass .block .value{
     }
-   .appplyreject .block1 .value{
+.applypass .block1 .value{
     }
-   #remove-dialogue{
+.appplyreject .block{
+}
+.appplyreject .block .value{
+}
+.appplyreject .block1 .value{
+}
+#remove-dialogue{
     position: fixed;
     z-index: 12;
     top:10%;
@@ -467,10 +464,10 @@ table{
     border-radius: 5px;
     padding: 6%;
     margin-left: 0%;
-    padding-bottom: 1%
-
-   }
-   #modify-pub{
+    padding-bottom: 1%;
+    animation: dialogue 0.3s
+}
+#modify-pub{
     position: fixed;
     z-index: 12;
     top:2%;
@@ -478,8 +475,8 @@ table{
     color:brown;
     padding: 2% 5% 3% 5%;
     background-color: rgba(138, 170, 170, 0.596)
-   }
-   #modify-apply{
+}
+#modify-apply{
     position: fixed;
     z-index: 12;
     top:2%;
@@ -487,10 +484,16 @@ table{
     color:brown;
     padding: 2% 5% 3% 5%;
     background-color: rgba(138, 170, 170, 0.596)
-   }
+}
 p.value{
     font-size: 50%
 }
 .my-publish{
  }
+@keyframes dialogue{
+    0% {opacity: 0;}
+    20% {opacity: 0.1;}
+    70% {opacity: 0.8;}
+    100% {opacity: 1;}
+}
 </style>
