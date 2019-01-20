@@ -75,7 +75,11 @@
       item.cols-3(name='CET' v-if='!tidyMode'
         route='/cet' value='›')
 
+<<<<<<< HEAD
       item.cols-1(name='组队' v-if='!tidyMode'
+=======
+      item.cols-3(name='组队' v-if='!tidyMode'
+>>>>>>> f2333fc61bffa4fe63a3c112d86f400b7a75e8ec
         route='/team' value='›')
 
       item.cols-1(name='通知'
