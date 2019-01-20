@@ -1,16 +1,16 @@
 <template lang="pug">
 
-  .notice-page
+  .page.notice-page
     .markdown-container(v-if='markdown' v-html='markdown')
     .markdown-container(v-else) 加载中…
+    .original(v-if='$route.params.url') 页面由小猴偷米引擎转码，可能丢失部分信息。
+      a(:href='$route.params.url' target='_blank') 查看原文
 
 </template>
 <script>
 
   import api from '@/api'
-  import marked from 'marked'
-
-  marked.setOptions({ gfm: true })
+  import renderMarkdown from '@/util/markdown'
 
   export default {
     data() {
@@ -40,22 +40,24 @@
       },
       async loadOther(notice) {
         let res = await api.post('/api/notice', notice)
-        this.markdown = marked(res)
+        this.markdown = renderMarkdown(res)
       },
       async loadCompetition(id) {
         let res = await api.post('/api/srtp/competition', { id })
-        this.markdown = marked(res)
+        this.markdown = renderMarkdown(res)
       }
     }
   }
 
 </script>
 <style lang="stylus">
-  .notice-page
+
+  .page.notice-page
+    padding 0
 
     .markdown-container
       border-top 0.5px solid transparent
-      padding 15px 25px
+      padding 15px
       transition .3s
       color #555
       text-align justify
@@ -138,5 +140,9 @@
       hr
         border 0 none
         border-top 0.5px solid var(--color-divider)
+
+    .original
+      padding 0 15px 20px
+      text-align center
 
 </style>

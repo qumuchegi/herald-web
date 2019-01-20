@@ -1,5 +1,5 @@
 <template lang="pug">
-    div
+    div#body
       h2 填写召集令
       #call-form
        div: span.key QQ
@@ -89,56 +89,117 @@
     }
 </script>
 <style scoped>
-h2{
-    text-align: center;
-    color:rgb(74, 169, 192);
-}
-#call-form{
-    padding-left: 10%;
-    padding-right: 10%
-}
-#call-form input{
-    border: 1px solid rgb(74,169,192,0.4)
-}
-#publish-button{
-    margin-left: 34%;
-    margin-top: 5%;
-    padding: 1% 10% 1% 10%;
-}
-#publisher-name{
-    margin-left: 7%;
+     #body{
+        background-color: white;
+        padding-top: 2%
+        }
+    @media screen and (max-width: 480px) {
+       
+        h2{
+            text-align: center;
+            color:rgb(74, 169, 192);
+        }
+        #call-form{
+            padding-left: 10%;
+            padding-right: 10%
+        }
+        #call-form input{
+            border: 1px solid rgb(74，169，192)
+        }
+        #publish-button{
+            margin-left: 34%;
+            margin-top: 5%;
+            padding: 1% 10% 1% 10%;
+        }
+        #publisher-name{
+            margin-left: 7%;
 
-}
-#publisher-stunumber{
-    margin-left: 8%;
-}
-#publisher-QQ{
-    margin-left: 22%;
-}
-#publisher-comptation{
-    margin-left: 20%;
-}
-#publisher-num{
-    margin-left: 3%;
- }
-#publish-more{
-    margin-left: 12%;
-    border: 1px solid rgb(74,169,192,0.4) 
-}
-hr{
-    margin: 2%;
-}
-.deadLine{
-    margin-left: 11.7%
-}
-#published-alert,#hassamepublish{
-    text-align : center;
-    margin : 2% 20% 2% 20%;
-    color : rgb(62,121,124);
-    border : radius 3px;
-    font-size : 130%
-}
-.key{
-    color: rgb(74,169,192)
-}
+        }
+        #publisher-stunumber{
+            margin-left: 8%;
+        }
+        #publisher-QQ{
+            margin-left: 22%;
+        }
+        #publisher-comptation{
+            margin-left: 20%;
+        }
+        #publisher-num{
+            margin-left: 3%;
+        }
+        #publish-more{
+            margin-left: 12%;
+            border: 1px solid rgb(74，169，192) 
+        }
+        hr{
+            margin: 2%;
+        }
+        .deadLine{
+            margin-left: 11.7%
+        }
+        #published-alert,#hassamepublish{
+            text-align : center;
+            margin : 2% 20% 2% 20%;
+            color : rgb(74，169，192);
+            border : radius 3px;
+            font-size : 130%
+        }
+        .key{
+            color: rgb(74,169,192)
+        }
+    }
+    @media screen and (min-width: 500px){
+        h2{
+            text-align: center;
+            color:rgb(74, 169, 192);
+        }
+        #call-form{
+            padding-left: 10%;
+            padding-right: 10%
+        }
+        #call-form input{
+            border: 1px solid rgb(74，169，192)
+        }
+        #publish-button{
+            margin-left: 34%;
+            margin-top: 5%;
+            padding: 1% 10% 1% 10%;
+        }
+        #publisher-name{
+            margin-left: 7%;
+
+        }
+        #publisher-stunumber{
+            margin-left: 8%;
+        }
+        #publisher-QQ{
+            margin-left: 22%;
+        }
+        #publisher-comptation{
+            margin-left: 21%;
+        }
+        #publisher-num{
+            margin-left: 13%;
+        }
+        #publish-more{
+            margin-left: 17%;
+            border: 1px solid rgb(74，169，192) 
+        }
+        hr{
+            margin: 2%;
+        }
+        .deadLine{
+            margin-left: 17%
+        }
+        #published-alert,#hassamepublish{
+            text-align : center;
+            margin : 2% 20% 2% 20%;
+            color : rgb(74，169，192);
+            border : radius 3px;
+            font-size : 130%
+        }
+        .key{
+            color: rgb(74,169,192)
+        }
+    }
 </style>

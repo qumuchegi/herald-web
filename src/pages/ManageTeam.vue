@@ -1,5 +1,5 @@
 <template lang = "pug">
-    div 
+    div#body
       ul#tab 
           li(:class="{selected: show===1}",@click= "show=1") 我的申请
           li(:class="{selected: show===2}",@click= "show=2") 接收申请
@@ -62,7 +62,7 @@
                     tr.value {{myapplyItem.status===0 ? '申请当中' : myapplyItem.status===1 ? '申请成功' :myapplyItem.status===2 ? '申请被拒绝' :myapplyItem.status===3?'已取消申请':'组队已弃置'}}
                 tr 
                   td.block 
-                    span(@click="clickToDetails(myapplyItem.tid)",v-if="myapplyItem.status===0||1||2||3") 团队详情
+                    tr.key(@click="clickToDetails(myapplyItem.tid)",v-if="myapplyItem.status===0||1||2||3") 团队详情
                     div(v-if="myapplyItem.status===4") 此团队已经被弃置
                   td.block 
                     tr.key 通过或拒绝的理由
@@ -130,7 +130,7 @@
                     input(v-model="modified_qq=mypublishItem.qq",style="width: 80%",v-if="isModify_pub_start===index")
                 tr 
                  table(style="width:100%;margin:0;padding:0;border-width:0")
-                    td.block
+                    td.block(v-if="isModify_pub_start!==index")
                         tr.key 发布时间
                         tr.value {{unixTOnormal(mypublishItem.publishedDate)}}
                     td.block 
@@ -149,17 +149,13 @@
                  textarea(v-model="modified_description=mypublishItem.description",style="width: 98%;margin-bottom:4%;margin-left:3%",rows="5",v-if="isModify_pub_start===index") 
             div(style="margin: 5% 20% 5% 36%")
                   button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
-                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%", 
                         @click="WillmodifyPub(mypublishItem.tid,index)") 修改
                   button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
-                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
                         @click="willremovePub(mypublishItem.tid)") 删除
-                  span(v-if="isModify_pub_start===index",
-                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                        @click="cancelmodifyPublish(mypublishItem.tid,index)") 取消修改 
-                  span(v-if="isModify_pub_start===index", 
-                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                        @click="submitModify_pub(mypublishItem.tid)") 修改完成    
+                  button(v-if="isModify_pub_start===index",
+                        @click="cancelmodifyPublish(mypublishItem.tid,index)") 取消
+                  button(v-if="isModify_pub_start===index", 
+                        @click="submitModify_pub(mypublishItem.tid)") 完成    
 
 </template>
 <script>
@@ -181,7 +177,7 @@
              isRemove_publish : false,    
                isRemove_apply : false,
                          hard : false, //是否从数据库删除
-                           id : '',    //要删除或者的召集令和申请的id
+                           id : '',    //要删除的召集令和申请的id
            isModify_pub_start : -1,
         isModify_pub_finished : false,
          isModify_apply_start : false,
@@ -237,7 +233,7 @@
                     Vue.toasted.show('申请者已经撤销申请')        
                 } 
             },
-            unixTOnormal(unixtime){
+            unixTOnormal(unixtime){ 
                 if(typeof(unixtime)==='string')return unixtime;
                 let unixTimestamp = new Date(unixtime * 1000);
                 let Y = unixTimestamp.getFullYear();
@@ -347,6 +343,10 @@
 }
 </script>
 <style scoped>
+    #body{
+        background-color: white;
+        padding-top: 2%
+    }
 #tab{
      width:100%;
 }
@@ -360,12 +360,12 @@ table{
 }
 #tab .selected{
     background-color: rgba(226,250,254);
-    color:rgba(74,131,141)
+    color:rgba(74,169,192)
 }
 h4{
     text-align: center;
     background-color:rgb(226,250,254);
-    color:rgba(79,122,125);
+    color:rgba(74,169,192);
     font-size: 120%;
 }
 .my-team{
@@ -389,18 +389,18 @@ h4{
  
 }
 .publish-details{
-    color: rgb(74,169,192);
+    color: rgb(154, 168, 180);
     padding: 1% 2% 1% 2%;
     border-radius: 4px;
     margin-top: 5%
 }
 .myapply-item{
-    background-color: rgba(243,255,255);
+    background-color: rgba(247，247，247);
     margin: 1% 10% 1% 10%;
     border-radius: 4px;
 }
 .proj-details{
-    background-color: aliceblue;
+   
     margin: 1% 10% 1% 10%;
 }
 .proj-details h3{
@@ -414,14 +414,14 @@ table{
     border-radius: 3%;
 }
 .block{
-    background-color:rgba(237,237,237,0.5);
-     
+ 
+    margin-top: 2.5%;
     color:rgba(74,169,192);
     padding-left: 3%;
   
 }
 .block1{
-    background-color:rgba(237,237,237);
+    
     color:rgba(74,169,192);
     padding-left: 3%;
      
@@ -431,16 +431,18 @@ table{
     padding-left: 3%
 }
 .value{
-    color: rgba(67,126,136);
+    color: rgba(74,169,192);
+    text-align: center;
     font-size: 110%;
     padding-left: 20%
 }
-#description{
+#description {
     padding-right: 3%;
     width:93%;
     margin-left:2%;
-    background-color:rgba(237,237,237,0.5)
+   
 }
+ 
 .applypass .block{
     }
 .applypass .block .value{
@@ -459,13 +461,18 @@ table{
     top:10%;
     left:17%;
     color:brown;
-    font-size: 110%;
-    background-color: rgba(27, 118, 134, 0.558);
+    font-size: 120%;
+    background-color: rgba(247,247,247);
+    box-shadow: 1px 2px 2px 2px gray;
     border-radius: 5px;
     padding: 6%;
     margin-left: 0%;
     padding-bottom: 1%;
     animation: dialogue 0.3s
+}
+#remove-dialogue h3{
+    color:gray;
+    text-align: center
 }
 #modify-pub{
     position: fixed;
@@ -474,7 +481,7 @@ table{
     left:14%;
     color:brown;
     padding: 2% 5% 3% 5%;
-    background-color: rgba(138, 170, 170, 0.596)
+    background-color: rgba(174，169，192)
 }
 #modify-apply{
     position: fixed;
@@ -483,7 +490,7 @@ table{
     left:14%;
     color:brown;
     padding: 2% 5% 3% 5%;
-    background-color: rgba(138, 170, 170, 0.596)
+    background-color: rgba(74，169，192)
 }
 p.value{
     font-size: 50%

@@ -3,9 +3,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import interceptor from './util/interceptor'
 import Toasted from 'vue-toasted'
 import Persist from 'vue-component-persist'
+import intercept from 'intercept-link-clicks'
+
+// 对手机屏幕（小于 480 逻辑像素宽度）应用 400px 缩放模式；对其他终端应用自适应宽度模式。
+if (window.innerWidth < 480) {
+  let viewport = document.querySelector('meta[name="viewport"]')
+  viewport.setAttribute('content', 'width=400,user-scalable=no,viewport-fit=cover')
+}
 
 if (window.navigator.standalone) {
   window.__herald_env = 'webapp'
@@ -50,7 +56,7 @@ Vue.toasted.__show = Vue.toasted.show
 Vue.toasted.show = (text, ...args) => {
   if (text !== lastToastText) {
     lastToastText = text
-    setTimeout(() => lastToastText = null, 10000)
+    setTimeout(() => lastToastText = null, 5000)
     return Vue.toasted.__show(text, ...args)
   }
 }
@@ -63,3 +69,23 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
+
+intercept({
+  target: false,
+  sameOrigin: false
+}, (e, el) => {
+  console.log(e, el)
+  if (
+    el.tagName === 'A' && 
+    el.href.indexOf('myseu.cn') === -1 &&
+    (window.__wxjs_environment === 'miniprogram' || window.navigator.standalone)
+  ) {
+    if (window.__wxjs_environment === 'miniprogram') {
+      Vue.toasted.show('小程序内无法跳转，请在公众号或 Web 版查看')
+    } else if (window.navigator.standalone) {
+      Vue.toasted.show('WebApp 内无法跳转，请在公众号或 Web 版查看')
+    }
+    e.stopPropagation()
+    e.preventDefault()
+  }
+}, true)
