@@ -29,7 +29,7 @@
              span(style="background-color:rgba(230,249,253);padding: 3%;margin-left: 3%;width:7%", 
                   @click="submitmodifyApply(id)",
                   v-if="isModify_apply_start") 完成修改
-      #container          
+      #container       
         div(v-for= "myapplyItem of myapplys", 
             v-if= "show==1",  
             :class="[{applypass: myapplyItem.status===1},{appplyreject: myapplyItem.status===1}]")
@@ -106,10 +106,15 @@
             table 
                 tr 
                  td.block1 
+                  table
+                   td(v-if="isModify_pub_start!==index")
                     tr.key 竞赛类别
                     tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.projectName }}
-                    p(v-if="isModify_pub_start!==index",style="color:rgba(96,99,104);margin-left:2%;font-size:70%") {{mypublishItem.status===5?"管理员已删除":mypublishItem.status===4?'首页已隐藏':mypublishItem.status===1?'过期':'正常发布'}}
-                    p(v-if='mypublishItem.status===5',style="color:rgba(123,23,45);font-size:60%") 管理员：{{mypublishItem.msg}}
+                   td
+                    tr.key 帖子状态
+                    tr.value
+                     p(v-if="isModify_pub_start!==index",style="margin-left:2%;font-size:70%") {{mypublishItem.status===5?"管理员已删除":mypublishItem.status===4?'首页已隐藏':mypublishItem.status===1?'过期':'正常发布'}}
+                     p(v-if='mypublishItem.status===5',style="color:rgba(123,23,45);font-size:60%") 管理员：{{mypublishItem.msg}}
                     tr
                     input(v-model="modified_peojectName=mypublishItem.projectName",style="width: 80%",v-if="isModify_pub_start===index")                  
                  td.block1 
@@ -432,7 +437,6 @@ table{
 }
 .value{
     color: rgba(74,169,192);
-    text-align: center;
     font-size: 110%;
     padding-left: 20%
 }

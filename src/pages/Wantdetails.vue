@@ -59,7 +59,6 @@
       },
       created() {
         this.wantID = this.$route.params.wantid;
-        console.log('tid',this.wantID)
         this.getWant(this.wantID);
         this.Applied()
       },
@@ -68,13 +67,10 @@
             let postData= { type:3,  page:1, param:JSON.stringify({tid: this.wantID})  };
             let res = await api.get('/api/team',postData);
             this.wantInfo = res.data[0];
-            console.log('res.data',this.wantInfo)
           },
           async Applied(){ 
             let res = await api.get('/api/team', {type:2,page:1});
             let {requested} = res;
-            console.log('applied res',requested)
-            console.log('wantId',this.wantID)
             requested.map(ele => {
                 ele.tid===this.wantID && ele.status!==3 && ele.status!==2? this.hasApplied=true : null;
             });
@@ -88,10 +84,9 @@
             let D = (unixTimestamp.getDate() > 10 ? unixTimestamp.getDate() : '0' + unixTimestamp.getDate());
             let toDay = Y + '-' + M + '-' + D;
             return  toDay;
-        },
-        async applyJion(){
+          },
+          async applyJion(){
             if(this.myapplytext && this.myqq){
-                console.log(this.myapplytext,this.myqq)
                 let res = await api.post('/api/team/registration', 
                 { 
                     tid:this.wantInfo.tid,
@@ -99,11 +94,10 @@
                     description:this.myapplytext 
                 });
                 res.status===0?Vue.toasted.show('已经发出申请'):Vue.toasted.show('重复申请')
-                console.log('申请res:',res)
             }else{
                 Vue.toasted.show('请填写完整')
             }
-        }
+          }
       }
 
   }

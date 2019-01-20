@@ -1,12 +1,12 @@
 <template lang="pug">
     #body 
         ul 
-          li(@click= "clickToSearch(isQuery)",:class="{isadmin:user.cardnum==='213163480'}") 搜team
-          li(@click= "clickToFindMate",:class="{isadmin:user.cardnum==='213163480'}") 招队员
-          li(@click= "clickToManage",:class="{isadmin:user.cardnum==='213163480'}") 我的
+          li(@click= "clickToSearch(isQuery)") 搜team
+          li(@click= "clickToFindMate" ) 招队员
+          li(@click= "clickToManage" ) 我的
           li.isadmin(@click= "clickToAdmin",v-if= "user.cardnum==='213163480'") 管理者
         p#query-input(v-if= 'isQuery')
-            select#querymodel( @change="changeQmodel") 
+            select#querymodel( @change="changeQuerymodel") 
                 option(value="projectName" selected) 竞赛名
                 option(value="masterName") 发起人
                 option(value="cardnum") 一卡通
@@ -46,7 +46,7 @@
         created() {
            this.queryModel = 'projectName';
            this.getWantsOnPage_Of(1,this.page);
-           let now = new Date();
+           let now = new Date();     //获取当前时间以与发布时间比较
             this.now.Y = now.getFullYear();
             this.now.M = now.getMonth();
             this.now.D = now.getDate();
@@ -55,7 +55,7 @@
            return {
                    now : {},
                showTab : 1,        
-                  type : 1,            //搜索类，1 获取所有组队，3 搜索特定组队
+                  type : 1,           //搜索类，1 获取所有组队，3 搜索特定组队
                isQuery : false,       // 搜索框是否渲染的状态，false默认不渲染
               queryStr : '',          // 获取搜索框input 的项目名称
                   page : 1,           // 获取对应页数的组队项
@@ -70,30 +70,26 @@
     methods: {
         async getWantsOnPage_Of(type,page) {
             if(type === 3){
-                let queryStr= this.queryStr;
-                console.log('搜索type，page,queryStr', type,page,queryStr)
+                let queryStr = this.queryStr;
                 if(this.queryStr === '') {
                     Vue.toasted.show('请输入搜索竞赛')
                 }else{
                     this.type = 3;
                     let querymodelMap = new Map();
                     querymodelMap.set(this.queryModel,queryStr);
-                    let querymodelObj={};
+                    let querymodelObj = {};
                     for (let [queryModel,queryStr] of querymodelMap)
-                    querymodelObj[queryModel]=queryStr;
+                    querymodelObj[queryModel] = queryStr;
                     let postData= { type:3,  page: page, param:JSON.stringify(querymodelObj)};
-                    console.log(postData)
-                     let res= await api.get('/api/team', postData)
-                     this.wantInfo = res.data;
-                     console.log('搜索res',this.wantInfo)
+                    let res= await api.get('/api/team', postData)
+                    this.wantInfo = res.data;
+                    console.log('搜索res',this.wantInfo)
                 }
             };
             if(type===1){
-                console.log('获取组队项：type,page',type,page)
                 let res = await api.get('/api/team', { type:type, page:page});
                 this.wantInfo = res.data;
-                console.log('this.wantInfo',this.wantInfo)
-            }
+             }
         },
         getNextPage(){
             this.page++;
@@ -124,7 +120,6 @@
             this.$router.push( { path: '/manage' } );
         },
         isapplyJoin(Want_ID,want_Master) {//唤起申请需要填写的表单，在表单填写完确定后才会真正发送申请
-            console.log('tid',Want_ID,'masterName',want_Master)
             this.isapply = true;
             this.applyWant_ID = Want_ID;
         }
@@ -156,12 +151,11 @@
                             this.now.M > M ? 
                             (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true 
                             : this.now.D-D > 1 ? false : true
-            },
-            changeQmodel(){
+        },
+        changeQuerymodel(){
                 let that = document.getElementById('querymodel')
                 this.queryModel = that.options[that.selectedIndex].value;
-                console.log(this.queryModel)
-            }
+        }
     }
 }
 </script>
@@ -172,16 +166,12 @@
     padding-top: 2%
 }
 ul li{
+    color:black;
     display: inline-block;
     margin-left: 13%;
-    font-weight:200%;
-    color:rgba(74,169,192);
+    font-weight:300%;
 }
-.isadmin{
-    display: inline-block;
-    margin-left: 7%;
-    color:rgba(74,169,192)
-}
+ 
 #turn-page{
     margin-left: 10%;
     margin-bottom: 0
@@ -236,10 +226,7 @@ ul li{
     border-radius: 3px;
     display: inline-block
 }
-#query-input{
-    
-  
-}
+ 
 #query-input input{
     width:50%;
     margin-left:1%;
