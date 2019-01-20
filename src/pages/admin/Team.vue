@@ -162,7 +162,7 @@ table{
 }
 .block{
        background-color: white;
-       color:#437e88;
+       color:rgba(74,169,192);
        padding-left: 3%
 }
 .key{
@@ -170,7 +170,7 @@ table{
        padding-left: 3%
 }
 .value{
-       color: rgba(67,126,136);
+       color: rgba(74,169,192);
        font-size: 110%;
        padding-left: 20%
 }

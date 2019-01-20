@@ -1,21 +1,15 @@
 <template lang='pug'>
-  #app(:class='env')
+  #app(:class='env', :is-loading='isLoading')
     .app-container
       //- base-page 为手机版底部界面，桌面版左侧栏
       .base-page
-        .base-header
-          router-link.live2d-wrapper(to='/')
-            .live2d-container
-              live2d(:loading='isLoading')
-            img.logo(:src='logoImg')
-          .spacing
-          router-link(to='/download')
-            img.download(:src='downloadImg')
-        seuLogin(:is-loading='isLoading')
-        tabs(:user='user')
+        seuLogin
+        scrollView(v-if='user')
+          home(:user='user')
+        login(v-else)
 
       //- overlay-page 为手机版上层栈，桌面版右侧栏
-      .overlay-page(:class='{ home: isHome }' ref='page')
+      .overlay-page(v-if='user' :class='{ home: isHome }' ref='page')
         .overlay-header
           transition(name='slide')
             .title-bar(v-if='!isHome')
@@ -32,10 +26,11 @@
 
   import api from './api'
   import router from './router'
-  import tabs from './base/Tabs.vue'
   import live2d from './components/Live2D.vue'
   import seuLogin from './components/SeuLogin.vue'
   import scrollView from './components/ScrollView.vue'
+  import home from './pages/Home.vue'
+  import login from '@/components/Login.vue'
 
   import logoImg from 'static/images/logo.png'
   import downloadImg from 'static/images/download.png'
@@ -71,7 +66,7 @@
   export default {
     name: 'app',
     components: { 
-      live2d, tabs, seuLogin, scrollView
+          login, live2d, seuLogin, scrollView, home
     },
     data() {
       return {
@@ -129,6 +124,7 @@
         let onLogout = async () => {
           this.user = null
           location.href = '#/'
+          localStorage.clear()
         }
         
         if (api.token) {
@@ -161,7 +157,7 @@
     --color-text-bold      #555555
     --color-text-secondary #888888
     --color-divider        #f0f0f0
-    --color-tool-bg        #fafafa
+    --color-tool-bg        #f0f0f0
 
     --color-primary-dark   #237a86
     --color-primary        #00abc3
@@ -204,7 +200,7 @@
   html, body
     margin 0
     padding 0
-    background #fff
+    background var(--color-tool-bg)
     overflow hidden
 
   p, input, textarea
@@ -330,11 +326,11 @@
     transform none !important
     // 浮于抽屉上层
     z-index 99999 !important
-    top 60px !important
+    top 0 !important
     left 0 !important
     right 0
     margin-left auto
-    padding 10px
+    padding 15px
 
     .toasted
       margin 0 auto 10px
@@ -369,6 +365,32 @@
     -ms-user-select: none
     user-select: none
 
+    &[is-loading="true"]::before
+      content ''
+      position fixed
+      top 0
+      height 1px
+      background var(--color-primary)
+      animation loading 2s linear infinite
+      z-index 9999
+
+    @keyframes loading
+      0%
+        left 0%
+        width 0
+      10%
+        left 0%
+        width 50px
+      50%
+        left calc(50% - 75px)
+        width 150px
+      90%
+        left calc(100% - 50px)
+        width 50px
+      100%
+        left 100%
+        width 0
+
     .app-container
       position fixed
       top 0
@@ -383,6 +405,8 @@
       bottom 0
       bottom constant(safe-area-inset-bottom)
       bottom env(safe-area-inset-bottom)
+      max-width 1200px
+      margin 0 auto
       display flex
       flex-direction row
       overflow hidden
@@ -390,17 +414,16 @@
       @media screen and (max-width: 600px)
         display block
 
-      .base-header, .overlay-header
-        width 100%
-        height 60px
-        flex 0 0 60px
+      .overlay-header
+        margin 15px 15px 0
+        height 40px
+        flex 0 0 40px
         box-sizing border-box
-        padding 0 10px
+        padding 0 15px
         display flex
         flex-direction row
         align-items center
-        justify-content flex-start
-        background #fff
+        justify-content center
         border-bottom 0.5px solid var(--color-divider)
         z-index 999
 
@@ -411,17 +434,10 @@
           padding 0 10px
 
           .live2d-container
-            width 56px
-            height 56px
+            width 48px
+            height 48px
             position relative
             filter hue-rotate(-15deg)
-
-          img.logo
-            width 115px
-            height 40px
-            object-fit cover
-            object-position 100% 50%
-            pointer-events none
 
         .spacing
           flex 1 1 0
@@ -449,7 +465,7 @@
       .overlay-page
         flex 1 1 0
         overflow hidden
-        border-left 10px solid var(--color-divider)
+        margin-left -15px
         background var(--color-divider)
         display flex
         flex-direction column
@@ -458,7 +474,7 @@
 
         @media screen and (max-width: 600px)
           position absolute
-          background #fff
+          margin-left 0
           min-width none
           max-width none
           width 100%
@@ -482,7 +498,6 @@
               background transparent
 
         .overlay-header .title-bar
-          height 60px
           display flex
           flex-direction row
           align-items center
@@ -490,11 +505,12 @@
 
           .back
             display block
-            font-size 22px
+            font-size 26px
             vertical-align middle
             text-align center
-            width 60px
-            line-height 58px
+            width 40px
+            height 40px
+            line-height 40px
             cursor pointer
             
             &:hover
@@ -506,29 +522,27 @@
             font-weight bold
             color var(--color-text-bold)
             text-align center
-            padding-right 60px
-            line-height 60px
+            padding-right 40px
+            line-height 40px
 
         .overlay-router
           flex 1 1 0
           position relative
-          background #fff
 
           .scroll-content > *
             position relative
             top 0
-            width 100%
-            min-height 100%
+            min-height 100vh
             box-sizing border-box
 
           .page-enter-active, .page-leave-active
             transition .3s !important
             position absolute !important
             overflow hidden !important
-            width 100% !important
-            min-height 100% !important
+            width calc(100% - 30px) !important
             z-index 9999 !important
             transform translateZ(0px)
+            transform-origin var(--mouse-x, 50%) var(--mouse-y, 400px) !important
 
           .page-leave-active
             transition .3s !important
@@ -538,49 +552,34 @@
           .page-enter
             min-height 0
             transform scale(0.2) translateZ(0px) !important
-            transform-origin var(--mouse-x, 50%) var(--mouse-y, 400px) !important
             box-shadow 0 0 25px rgba(0, 0, 0, .1) !important
             border-radius 20px !important
             overflow hidden !important
 
         @media screen and (max-width: 600px)
           position absolute
-          border-left 0
           width 100%
           height 100%
 
-      // 强制加固定灰底，尤其在微信和小程序中用于屏蔽黑底和微信的提示文字
-      @media screen and (max-width: 600px)
-        &::before
-          content '专注公益更懂你'
-          padding 80px 0
-          text-align center
-          position fixed
-          font-size 13px
-          color #aaa
-          letter-spacing 1px
-          top 0
-          left 0
-          right 0
-          bottom 0
-          z-index -999
-          background var(--color-divider)
+    //   // 强制加固定灰底，尤其在微信和小程序中用于屏蔽黑底和微信的提示文字
+    //   @media screen and (max-width: 600px)
+    //     &::before
+    //       content '专注公益更懂你'
+    //       padding 20px 0
+    //       text-align center
+    //       position fixed
+    //       font-size 13px
+    //       color #aaa
+    //       letter-spacing 1px
+    //       top 0
+    //       left 0
+    //       right 0
+    //       bottom 0
+    //       z-index -999
+    //       background var(--color-divider)
 
-    &.wx, &.mina
-      .base-header
-        display none
-
-      .app-container::before
-        padding 20px 0
-
-    &.mina .app-container::before
-      content '访问 myseu.cn 使用 PWA 版完整功能'
-
-  .widget
-    border-bottom 0.5px solid var(--color-divider)
-
-    @media screen and (max-width: 600px)
-      border-bottom-width 10px
+    // &.mina .app-container::before
+    //   content '访问 myseu.cn 使用 PWA 版完整功能'
 
   .widget, .page, .admin-page
     position relative
@@ -592,14 +591,21 @@
     transition: .3s
     display flex
     flex-direction column
+    padding 20px 20px 15px
+    margin 15px
+    border-radius 5px
     background #fff
-    padding 20px 25px
+    box-shadow 0 3px 1px 0 rgba(0, 0, 0, .03)
+
+    & + .widget, .page, .admin-page
+      margin-top 0
 
     .empty
       display block
       text-align center
       color #888
       font-size 14px
+      margin 15px 0
 
     ul.info-bar
       width 100%
@@ -644,6 +650,7 @@
       display flex
       flex-direction column
       white-space normal
+      line-height 1.7em
 
       > li + li
         border-top 0.5px solid var(--color-divider)
@@ -680,8 +687,8 @@
           margin-left 20px
 
         .top .left
-          font-size 15px
-          color var(--color-primary)
+          font-size 16px
+          color var(--color-text-regular)
 
         .top .right, .bottom .left
           font-size 13px
@@ -696,6 +703,12 @@
 
         &:last-child
           padding-bottom 0
+
+        &.empty
+          display block
+          text-align center
+          color #888
+          font-size 14px
 
         &:first-child
           padding-top 0

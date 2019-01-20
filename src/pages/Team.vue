@@ -6,11 +6,11 @@
           li(@click= "clickToManage",:class="{isadmin:user.cardnum==='213163480'}") 我的
           li.isadmin(@click= "clickToAdmin",v-if= "user.cardnum==='213163480'") 管理者
         p#query-input(v-if= 'isQuery')
-            input(v-model= 'queryStr',placeholder= "竞赛名/发起人名/一卡通")
             select#querymodel( @change="changeQmodel") 
                 option(value="projectName" selected) 竞赛名
                 option(value="masterName") 发起人
                 option(value="cardnum") 一卡通
+            input(v-model= 'queryStr',placeholder= "竞赛名/发起人名/一卡通")
             button(@click= "getWantsOnPage_Of(3,page)") 搜索
             button(@click= 'cancelQuery') 取消
         #turn-page 
@@ -34,7 +34,7 @@
                 #want-publisher 
                     span(style= 'padding-top:1%;padding-bottom:1%;background-color : rgba(74,169,192);color : aliceblue;border-radius : 2px 0 0 2px') 发布人
                     span(style= 'border-style:solid;border-width:1px;border-radius:0 3px 3px 0;color : rgba(74,169,192)')  {{ wantItem.masterName }}
-            button(style= 'float: right; margin-right: 2%',@click= "clickToDetails(wantItem.tid)") 详情
+            span(style= 'float: right; margin-right: 2%;color:rgba(74,169,192)',@click= "clickToDetails(wantItem.tid)") 详情
    </template>
 
 <script>
@@ -150,21 +150,12 @@
         istimeNew(unixtime){//判断是否是新want标准是距离天数<1
                 let {Y,M,D} = this.unixTOnormal(unixtime);
                 return (this.now.Y > Y) ? 
-                                        (this.now.M > M ? 
-                                         false 
-                                         : 
-                                         (12-M)>=1 ? 
-                                         false 
-                                         : 
-                                         (31-D+(this.now.M-1)*31+this.now.D)>1 ? 
-                                         false
-                                         :
-                                         true
-                                        )
-                                        :
-                                        this.now.M > M ? 
-                                        (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true 
-                                        : this.now.D-D > 1 ? false : true
+                        (this.now.M > M ? false : (12-M)>=1 ? false : 
+                            (31-D+(this.now.M-1)*31+this.now.D)>1 ? 
+                            false : true ) :
+                            this.now.M > M ? 
+                            (31-D+(this.now.M-1)*31+this.now.D)>1 ? false:true 
+                            : this.now.D-D > 1 ? false : true
             },
             changeQmodel(){
                 let that = document.getElementById('querymodel')
@@ -177,7 +168,8 @@
 
 <style scoped>
 #body{
-    background-color: white
+    background-color: white;
+    padding-top: 2%
 }
 ul li{
     display: inline-block;
@@ -202,7 +194,7 @@ ul li{
     margin: 1%;
 }
 #nomore{
-    color: rgba(86,183,209);
+    color: rgb(74,169,192);
     text-align: center
 }
 #hasapplyed-warn{
@@ -212,7 +204,7 @@ ul li{
     left:14%;
     color:brown;
     font-size: 110%;
-    background-color: rgba(54, 145, 161, 0.158);
+    background-color: rgba(74,169,192);
     border-radius: 5px;
     padding: 6%;
     padding-bottom: 1%
@@ -236,7 +228,7 @@ ul li{
     margin: 2% ;
 }
 #want-project-title{
-    color:rgb(36, 110, 116);
+    color:rgb(74,169,192);
     border-radius: 3px;
     padding-bottom: 3.12%
 }

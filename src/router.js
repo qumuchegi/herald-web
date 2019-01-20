@@ -19,10 +19,15 @@ import AdminBanner from '@/pages/admin/Banner'
 import AdminActivity from '@/pages/admin/Activity'
 import Laundry from '@/pages/Laundry'
 import Download from '@/pages/Download'
-import Bus from '@/pages/Bus';
+import Bus from '@/pages/Bus'
 import Curriculum from '@/pages/Curriculum'
+import Schedule from '@/pages/Schedule'
+import Activity from '@/pages/Activity'
+import Notice from '@/pages/Notice'
+import CET from '@/pages/CET'
+import Team from '@/pages/Team'
 import TeamMember from '@/pages/Teammember'
-import Manage from '@/pages/Manage'
+import Manage from '@/pages/ManageTeam'
 import Wantdetails from '@/pages/Wantdetails'
 import AdminTeam from '@/pages/admin/Team'
 
@@ -130,11 +135,6 @@ export default new Router({
       component: AdminActivity
     },
     {
-      path: '/admin/team',
-      name: '组队管理',
-      component: AdminTeam
-    },
-    {
       path: '/screensaver',
       name: '屏保',
       component: ScreenSaver
@@ -155,6 +155,31 @@ export default new Router({
       component: Curriculum
     },
     {
+      path: '/schedule',
+      name: '校历',
+      component: Schedule
+    },
+    {
+      path: '/activity',
+      name: '校园活动',
+      component: Activity
+    },
+    {
+      path: '/notice',
+      name: '通知公告',
+      component: Notice
+    },
+    {
+      path: '/cet',
+      name: 'CET 查询',
+      component: CET
+    },
+    {
+      path:'/team',
+      name:'组队',
+      component: Team
+    },
+    {
       path: '/callmember',
       name: '招队友',
       component: TeamMember
@@ -168,6 +193,11 @@ export default new Router({
       path: '/wantdetails/:wantid',
       name: '召集令详情',
       component: Wantdetails 
+    },
+    {
+      path: '/admin/team',
+      name: '组队管理',
+      component: AdminTeam
     },
     {
       path: '*',

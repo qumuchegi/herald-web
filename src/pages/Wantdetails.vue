@@ -1,5 +1,5 @@
 <template lang = 'pug'>
-    div
+    div#body
       table 
         tr 
           td.block
@@ -109,6 +109,10 @@
   }
 </script>
 <style scoped>
+    #body{
+        background-color: white;
+        margin-top: 2%
+    }
     table{
         width:100%;
     }

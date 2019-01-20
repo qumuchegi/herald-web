@@ -1,16 +1,17 @@
 <template lang="pug">
 
-  .widget.notice
+  .page.notice
     ul.info-bar
       li.info(v-for='site in sites' @click='currentSite = site' :class='{ selected: currentSite == site }')
         .title {{ site }}
     ul.detail-list
       li(v-for='item in filteredNotice' :key='item.title' :class='{ important: item.isImportant }')
-        notice-link(:notice='item')
+        a(:href='noticeLink(item)')
           .top
             .left
-              .tag.important(v-if='item.isImportant') 重要
-              .tag.attachment(v-if='item.isAttachment') 附件
+              .tag(v-if='item.isImportant || item.isAttachment')
+                .important(v-if='item.isImportant') 重要
+                .attachment(v-if='item.isAttachment') 附件
               span {{ item.title }}
             .right {{ formatDateNatural(item.time) }}
           .bottom(v-if='item.category')
@@ -19,33 +20,16 @@
 
 </template>
 <script>
-
   import api from '@/api'
   import Vue from 'vue'
   import formatter from '@/util/formatter'
   import markdown from '@/components/Markdown'
 
   const RouterLink = Vue.component('router-link')
-  const NoticeLink = {
-    props: ['notice'],
-    render() {
-      let slot = this.$slots.default
-      if (this.notice.isAttachment) {
-        return <a href={ this.notice.url }>{ slot }</a>
-      }
-      if (this.notice.site === 'SRTP') {
-        return <RouterLink to={ '/notice/competition/' + this.notice.srtpId }>{ slot }</RouterLink>
-      }
-      if (this.notice.nid != null) {
-        return <RouterLink to={ '/notice/' + this.notice.nid }>{ slot }</RouterLink>
-      }
-      return <RouterLink to={ '/notice/url/' + encodeURIComponent(this.notice.url) }>{ slot }</RouterLink>
-    }
-  }
 
   export default {
     props: ['user'],
-    components: { markdown, 'notice-link': NoticeLink },
+    components: { markdown },
     data() {
       return {
         notice: [],
@@ -101,23 +85,24 @@
           srtpId: k.id
         }))).sort((a, b) => b.time - a.time)
       },
-      viewLink(notice) {
+      noticeLink(notice) {
         if (notice.isAttachment) {
-          return ''
-        } else if (notice.site === 'SRTP') {
-          return '/notice/competition/' + notice.srtpId
-        } else if (notice.nid != null) {
-          return '/notice/' + notice.nid
-        } else {
-          return '/notice/url/' + encodeURIComponent(notice.url)
+          return notice.url
         }
+        if (notice.site === 'SRTP') {
+          return '#/notice/competition/' + notice.srtpId
+        }
+        if (notice.nid != null) {
+          return '#/notice/' + notice.nid
+        }
+        return '#/notice/url/' + encodeURIComponent(notice.url)
       }
     }
   }
 
 </script>
 <style lang="stylus">
-  .widget.notice
+  .page.notice
     li.info
       cursor pointer
       transition .3s
@@ -129,18 +114,17 @@
         .title
           font-weight normal
 
-    .important .top .left
-      font-weight bold
-
     .tag
       display inline-block
       border-radius 3px
-      margin-right 5px
-      color #ffffff
-      font-size 12px
-      padding 1px 5px
-      vertical-align baseline
+      line-height 1em
+      padding 3px
+      margin-right 3px
+      margin-bottom 2px
       background var(--color-primary)
+      color #fff
+      font-size 12px
+      vertical-align middle
 
       &.important
         font-weight bold

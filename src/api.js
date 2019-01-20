@@ -13,8 +13,6 @@ export default new Vue({
       validateStatus: () => true
     })
   },
-  //http://localhost:3000/
-  //https://myseu.cn/ws3/
   created() {
     this.axios.defaults.headers.token = this.token = cookie.get('herald-default-token')
     // 更新 token 失效时间
@@ -39,7 +37,6 @@ export default new Vue({
       return this.handleResponse(await this.axios.get(route + params))
     },
     async post(route = '/', data = {}) {
-      console.log('post数据:',data)
       return this.handleResponse(await this.axios.post(route, data))
     },
     async put(route = '/', data = {}) {
@@ -51,31 +48,31 @@ export default new Vue({
       return this.handleResponse(await this.axios.delete(route + params))
     },
     handleResponse(response) {
-      let { status, data } = response
-      if (status < 400) {
-        let { code, result, reason } = data
-        status = code
-        data = reason
+      let { status: httpStatus, data: jsonData } = response
+      if (httpStatus < 400) {
+        let { code, result, reason } = jsonData
 
-        if (status < 400) {
-          if (status === 203) {
+        if (code < 400) {
+          if (code === 203) {
             result.isStale = true
           }
           return result
         }
-      }
 
-      // 出错时的处理
-      if (status === 401) {
-        if (this.isLogin) {
-          this.token = ''
-          Vue.toasted.show('登录已失效，请重新登录')
+        // 出错时的处理
+        if (code === 401) {
+          if (this.isLogin) {
+            this.token = ''
+            Vue.toasted.show('登录已失效，请重新登录')
+          }
+        } else {
+          Vue.toasted.show('请求失败：' + reason)
+          throw new Error(reason)
         }
       } else {
-        Vue.toasted.show('部分接口请求失败')
+        Vue.toasted.show('请求失败：系统维护')
+        throw new Error('Request failed with status ' + httpStatus)
       }
-
-      throw new Error(data)
     }
   }
 })
