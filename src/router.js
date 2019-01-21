@@ -26,8 +26,8 @@ import Activity from '@/pages/Activity'
 import Notice from '@/pages/Notice'
 import CET from '@/pages/CET'
 import Team from '@/pages/Team'
-import TeamMember from '@/pages/Teammember'
-import Manage from '@/pages/ManageTeam'
+import TeamPublish from '@/pages/TeamPublish'
+import Manage from '@/pages/MyTeam'
 import Wantdetails from '@/pages/Wantdetails'
 import AdminTeam from '@/pages/admin/Team'
 
@@ -182,7 +182,7 @@ export default new Router({
     {
       path: '/callmember',
       name: '招队友',
-      component: TeamMember
+      component: TeamPublish
     },
     {
       path: '/manage',
