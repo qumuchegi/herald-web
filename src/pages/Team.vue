@@ -4,7 +4,7 @@
           li(@click= "clickToSearch(isQuery)") 搜team
           li(@click= "clickToFindMate" ) 招队员
           li(@click= "clickToManage" ) 我的
-          li.isadmin(@click= "clickToAdmin",v-if= "user.cardnum==='213163480'") 管理者
+          li.isadmin(@click= "clickToAdmin",v-if= "user.cardnum!=='213163480'") 管理者
         p#query-input(v-if= 'isQuery')
             select#querymodel( @change="changeQuerymodel") 
                 option(value="projectName" selected) 竞赛名
@@ -27,7 +27,7 @@
                 span {{ wantItem.projectName }}
                 span(style="float: right;color:rgb(188, 199, 199)") 发布于{{unixTOnormal( wantItem.publishedDate ).YMD}}
                 span.new(v-if="istimeNew(wantItem.publishedDate)") 新
-            div(style= "display: inline-block; padding: 2% 2% 3% 2%")
+            div(style= "display: inline-block ")
                 #present-members 
                     span(style= 'padding-top:1%;padding-bottom:1%;background-color : rgba(74,169,192);color : aliceblue;border-radius : 2px 0 0px 2px') 目前组员
                     span(style= 'border-style:solid;border-width:1px;border-radius:0 3px 3px 0;color :rgba(74,169,192)')   {{ wantItem.currentPeople.length }}/{{ wantItem.maxPeople }}

@@ -19,97 +19,114 @@
                    v-if= "show==1", 
                    :class="[{applypass: myapplyItem.status===1},{appplyreject: myapplyItem.status===1}]")
             hr 
-            div
-                span.key 申请竞赛类
-                span.value {{ myapplyItem.projectName }}
+            div.title
+                span.name {{ myapplyItem.projectName }}
+                span.showApply(@click="isapplyshow=index") 展开>
+                span.time 申请于{{unixTOnormal(myapplyItem.applicationDate)}}
             hr
-            div
-                span.key 团队名
-                span.value {{myapplyItem.teamName}}
-            hr
-            div
-                span.key 发起时间
-                span.value {{unixTOnormal(myapplyItem.updateDate)}}
-            hr
-            div
-                span.key 申请时间
-                span.value {{unixTOnormal(myapplyItem.applicationDate)}}
-            hr
-            div
-                span.key 我的qq
-                span.value(v-if="isModify_apply_start!==index") {{myapplyItem.qq}}
-                input(v-if="isModify_apply_start===index",v-model="modified_qq_apply",style="width:60%")
-            hr
-            div
-                span.key 申请状态
-                span.value {{myapplyItem.status===0 ? '申请当中' : myapplyItem.status===1 ? '申请成功' :myapplyItem.status===2 ? '申请被拒绝' :myapplyItem.status===3?'已取消申请':'组队已弃置'}}
-            hr
-            div
-                button.key(@click="clickToDetails(myapplyItem.tid)",
-                           v-if="myapplyItem.status===0||1||2||3"
-                           style='margin-left:2%') 团队详情>
-                span(v-if="myapplyItem.status===4") 此团队已经被弃置
-            hr
-            div 
-                span.key 通过或拒绝的理由
-                span.value {{myapplyItem.responseText}}
-            hr
-            p 
-                div.key 个人简述
-                p(v-if="isModify_apply_start!==index",style="margin-left:5%;color:rgba(74,169,192)") {{myapplyItem.description}}
-                textarea(v-if="isModify_apply_start===index",v-model="modified_description_apply" ,rows="5" )     
-            div(style="margin: 5% 20% 5% 36%",v-if="myapplyItem.status===0")
-                button(v-if="isModify_apply_start!==index"
-                      style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                      @click="WillmodifyApply(myapplyItem.rid,index)") 修改
-                button(v-if="isModify_apply_start!==index"
-                      style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                      @click="WillremoveAppl(myapplyItem.rid)") 撤销
-                button(style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                        @click="cancelmodifyApply(id)",
-                        v-if="isModify_apply_start===index") 取消
-                button(style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
-                        @click="submitmodifyApply(id)",
-                        v-if="isModify_apply_start===index") 完成
+            div.applydetails(v-if='isapplyshow===index')
+                div
+                    span.key 申请竞赛类
+                    span.value {{ myapplyItem.projectName }}
+                hr
+                div
+                    span.key 团队名
+                    span.value {{myapplyItem.teamName}}
+                hr
+                div
+                    span.key 发起时间
+                    span.value {{unixTOnormal(myapplyItem.updateDate)}}
+                hr
+                div
+                    span.key 申请时间
+                    span.value {{unixTOnormal(myapplyItem.applicationDate)}}
+                hr
+                div
+                    span.key 我的qq
+                    span.value(v-if="isModify_apply_start!==index") {{myapplyItem.qq}}
+                    input(v-if="isModify_apply_start===index",v-model="modified_qq_apply",style="width:60%")
+                hr
+                div
+                    span.key 申请状态
+                    span.value {{myapplyItem.status===0 ? '申请当中' : myapplyItem.status===1 ? '申请成功' :myapplyItem.status===2 ? '申请被拒绝' :myapplyItem.status===3?'已取消申请':'组队已弃置'}}
+                hr
+                div
+                    button.key(@click="clickToDetails(myapplyItem.tid)",
+                            v-if="myapplyItem.status===0||1||2||3"
+                            style='margin-left:2%') 团队详情>
+                    span(v-if="myapplyItem.status===4") 此团队已经被弃置
+                hr
+                div 
+                    span.key 通过或拒绝的理由
+                    span.value {{myapplyItem.responseText}}
+                hr
+                p 
+                    div.key 个人简述
+                    p(v-if="isModify_apply_start!==index",style="margin-left:5%;color:rgba(74,169,192)") {{myapplyItem.description}}
+                    textarea(v-if="isModify_apply_start===index",v-model="modified_description_apply" ,rows="5" )     
+                div(style="margin: 5% 20% 5% 36%",v-if="myapplyItem.status===0")
+                    button(v-if="isModify_apply_start!==index"
+                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
+                        @click="WillmodifyApply(myapplyItem.rid,index)") 修改
+                    button(v-if="isModify_apply_start!==index"
+                        style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
+                        @click="WillremoveAppl(myapplyItem.rid)") 撤销
+                    button(style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
+                            @click="cancelmodifyApply(id)",
+                            v-if="isModify_apply_start===index") 取消
+                    button(style="background-color:rgba(230,249,253);padding: 3%;margin-left: 4%",
+                            @click="submitmodifyApply(id)",
+                            v-if="isModify_apply_start===index") 完成
 
-        div.applys(v-for= "applyTomeItem of applyToMe",v-if= "show==2 && applyTomeItem.status!==2")
+        div.applys(v-for= "(applyTomeItem,index) of applyToMe",v-if= "show==2 && applyTomeItem.status!==2")
+
             hr
-            div
-             span.key 申请人
-             span.value {{applyTomeItem.applicant}}
+            div.title
+                span.name {{ applyTomeItem.applicant }}
+                span.showApply(@click="isothersapplyshow=index") 展开>
+                span.time 申请于{{unixTOnormal(applyTomeItem.applicationDate)}}
             hr
-            div
-              span.key 申请时间
-              span.value {{unixTOnormal(applyTomeItem.applicationDate)}}
-            hr
-            div
-             span.key 申请人QQ
-             span.value {{applyTomeItem.qq}}
-            hr   
-            div
-             span.key 申请项目
-             span.value {{applyTomeItem.projectName}}（发布于{{unixTOnormal(applyTomeItem.applicationDate)}}）
-            hr   
-            div
-             span.key 个人简述
-             p(style="font-size:50%;margin-left:5%;color:rgba(74,169,192)") {{applyTomeItem.description}}
-            hr
-            p 
-              span.key 申请处理 
-              span.value(v-if="applyTomeItem.status===1") 已经给予通过
-              span.value(v-else-if="applyTomeItem.status===2") 已经给予拒绝
-              span(v-else)
-                    div 
-                      textarea(v-model="text",style="width: 80%",placeholder="填写通过或拒绝的理由 (选填)")
-                    div(style="margin-top: 5%;margin-left:20%")
-                      button(style="margin-left: 10%",@click="pass(applyTomeItem.rid,text)") 给予通过
-                      button(style="margin-left: 10%",@click="reject(applyTomeItem.rid,text)") 给予拒绝
+            div(v-if="isothersapplyshow===index")
+                div
+                span.key 申请人
+                span.value {{applyTomeItem.applicant}}
+                hr
+                div
+                span.key 申请时间
+                span.value {{unixTOnormal(applyTomeItem.applicationDate)}}
+                hr
+                div
+                span.key 申请人QQ
+                span.value {{applyTomeItem.qq}}
+                hr   
+                div
+                span.key 申请项目
+                span.value {{applyTomeItem.projectName}} 
+                hr   
+                div
+                span.key 个人简述
+                p(style="font-size:50%;margin-left:5%;color:rgba(74,169,192)") {{applyTomeItem.description}}
+                hr
+                p 
+                span.key 申请处理 
+                span.value(v-if="applyTomeItem.status===1") 已经给予通过
+                span.value(v-else-if="applyTomeItem.status===2") 已经给予拒绝
+                span(v-else)
+                        div 
+                        textarea(v-model="text",style="width: 80%",placeholder="填写通过或拒绝的理由 (选填)")
+                        div(style="margin-top: 5%;margin-left:20%")
+                        button(style="margin-left: 10%",@click="pass(applyTomeItem.rid,text)") 给予通过
+                        button(style="margin-left: 10%",@click="reject(applyTomeItem.rid,text)") 给予拒绝
         div.my-publish(v-for= "(mypublishItem,index) of mypublish",v-if="show==3")
             hr
-            table 
+            div.title
+                span.name {{  mypublishItem.projectName }}
+                span.showApply(@click="isPublishShow=index") 展开>
+                span.time 发布于{{unixTOnormal(mypublishItem.publishedDate)}}
+            table(v-if='isPublishShow===index')
                 tr 
                  td.block1 
-                  table
+                  table(style="width:100%;margin:0;padding:0;border-width:0")
                    td(v-if="isModify_pub_start!==index")
                     tr.key 竞赛类别
                     tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.projectName }}
@@ -151,11 +168,11 @@
                     tr.value(v-if="isModify_pub_start!==index") {{mypublishItem.maxPeople}}
                     tr 
                     input(v-model="modified_maxPeople=mypublishItem.maxPeople",style="width: 80%",v-if="isModify_pub_start===index")
-            #description
+            #description(v-if='isPublishShow===index')
                  .key 组队说明
                  p.value(v-if="isModify_pub_start!==index",style="font-size:50%") {{mypublishItem.description}}
                  textarea(v-model="modified_description=mypublishItem.description" ,rows="5",v-if="isModify_pub_start===index") 
-            div(style="margin: 5% 20% 5% 36%")
+            div(style="margin: 5% 20% 5% 36%",v-if='isPublishShow===index')
                   button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
                         @click="WillmodifyPub(mypublishItem.tid,index)") 修改
                   button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
@@ -200,6 +217,9 @@
                    //////////用于修改申请时的中间变量
    modified_description_apply : '',
             modified_qq_apply : '',
+            isapplyshow : 0,
+            isothersapplyshow : 0,
+            isPublishShow : 0
           
                 }
        },
@@ -512,6 +532,30 @@ textarea{
     margin-right:6%
 }
 .applys hr{
-    margin: 2.5%
+    margin: 2.5%;
+    width: 94%
+}
+.title{
+     
+}
+.title .name{
+    color: white;
+    margin-left: 3%;
+    background-color: rgb(74,169,192);
+    padding: 1%;
+    border-radius: 2px
+}
+.title .showApply{
+    color:rgb(74,169,192);
+    float:right;
+    margin-right: 6%
+}
+.title .time{
+    color:rgb(154, 168, 180);
+    float:right;
+    margin-right: 5%
+}
+.my-publish{
+    
 }
 </style>
