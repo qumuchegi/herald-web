@@ -3,7 +3,7 @@
       h2 填写组队帖
       #call-form
        div: span.key QQ
-            input#publisher-QQ(placeholder = "发布人QQ,用于后续联系",v-model = "qq") 
+            input#publisher-QQ(placeholder = "发布人QQ,用于后续联系",v-model = "QQ") 
        hr
        div: span.key 队名
             input#publisher-comptation(placeholder = "队名",v-model = "teamName")
@@ -15,15 +15,13 @@
             input#publisher-num(placeholder = ">=1",v-model = "maxPeople")
        hr 
        div: span.key 截止时间
-            input.deadLine(type = "date",v-model = "deadLine")
+            input.deadLine(type = "date",v-model = "endTime")
        hr
        div: span.key 组队说明
             textarea#publish-more(placeholder = "队员结构  招人条件 组队后分工安排 等.......",
                                    v-model = "description",rows = "10",cols = "30")
        button#publish-button(@click = "publishWantAd") 发布帖子
-       div#published-alert(v-if = "isPublished")  已发布  请返回刷新即可查看
-       div#hassamepublish-alert(v-if = "hasPublishedSameProj") 已经有相同队名发布，请选择其他队名
-</template>
+ </template>
 <script>
     import api from '@/api';
     import Vue from 'vue'
@@ -32,15 +30,13 @@
         props: [ 'user' ],
         data() {
            return {//召集令字段，将在后端入库，注释带* *的为新字段，带# #为以前保留的字段
-                                  qq : '',                     //发起人qq
+                                  QQ : '',                     //发起人qq
                             teamName : '',                     //*发起人给团队起的名* 
                          projectName : '',                     //发起项目名
                            maxPeople : '',                     //发起人给团队设置的成员最大数量
-                            deadLine : '',                     //召集令截止时间,
+                             endTime : '',                     //召集令截止时间,
                          description : '',                     //召集令描述
-                         isPublished : false ,                 //后端有无保存成功召集令 后端数据库无此字段
-                hasPublishedSameProj : false ,                 //后端是否查询到之前已经有相同竞赛的申请，后端数据库无此字段
-                                 now : {}
+                                  now : {}
             }
        },
        created() {
@@ -52,11 +48,11 @@
        methods: { //向后端发送填好的召集令信息，后端接受后会保存
            async publishWantAd() {  
                let postdata= {  
-                                    qq : this.qq, 
+                                    QQ : this.QQ, 
                               teamName : this.teamName,
                            projectName : this.projectName,
                              maxPeople : this.maxPeople,
-                              deadLine : this.deadLine,
+                               endTime : this.endTime,
                            description : this.description,  
 
                };
@@ -64,17 +60,17 @@
                     return Vue.toasted.show('预期招人数不是有效数字')
                 }
                 if( 
-                   this.qq && 
+                   this.QQ && 
                    this.teamName && 
                    this.projectName && 
                    this.maxPeople && 
-                   this.deadLine&&
+                   this.endTime&&
                    this.description )
                 {
                     try {
                         let res =  await api.post('/api/team', postdata);
                         //后端召集令入库后给前端的响应
-                        res.status===0 ? this.isPublished=true : this.hasPublishedSameProj=true;
+                        res.status===0 ? Vue.toasted.show('已经发布！首页可以查看'): Vue.toasted.show('已经发布相同组队贴！');
                     }catch(err){
                         Vue.toasted.show(err)
                     }

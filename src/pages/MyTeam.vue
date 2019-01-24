@@ -22,7 +22,7 @@
             div.title
                 span.name {{ myapplyItem.projectName }}
                 span.showApply(@click="isapplyshow=index") 展开>
-                span.time 申请于{{unixTOnormal(myapplyItem.applicationDate)}}
+                span.time 申请于{{unixTOnormal(myapplyItem.requestTime)}}
             hr
             div.applydetails(v-if='isapplyshow===index')
                 div
@@ -35,15 +35,15 @@
                 hr
                 div
                     span.key 发起时间
-                    span.value {{unixTOnormal(myapplyItem.updateDate)}}
+                    span.value {{unixTOnormal(myapplyItem.updateTime)}}
                 hr
                 div
                     span.key 申请时间
-                    span.value {{unixTOnormal(myapplyItem.applicationDate)}}
+                    span.value {{unixTOnormal(myapplyItem.requestTime)}}
                 hr
                 div
                     span.key 我的qq
-                    span.value(v-if="isModify_apply_start!==index") {{myapplyItem.qq}}
+                    span.value(v-if="isModify_apply_start!==index") {{myapplyItem.QQ}}
                     input(v-if="isModify_apply_start===index",v-model="modified_qq_apply",style="width:60%")
                 hr
                 div
@@ -52,9 +52,9 @@
                 hr
                 div
                     button.key(@click="clickToDetails(myapplyItem.tid)",
-                            v-if="myapplyItem.status===0||1||2||3"
+                            v-if="myapplyItem.status===0||myapplyItem.status===1||myapplyItem.status===2||myapplyItem.status===3",
                             style='margin-left:2%') 团队详情>
-                    span(v-if="myapplyItem.status===4") 此团队已经被弃置
+                    span(v-if="myapplyItem.status===4",style="margin-left:5%") 此团队已经被弃置
                 hr
                 div 
                     span.key 通过或拒绝的理由
@@ -82,22 +82,22 @@
 
             hr
             div.title
-                span.name {{ applyTomeItem.applicant }}
+                span.name {{ applyTomeItem.applicantName }}
                 span.showApply(@click="isothersapplyshow=index") 展开>
-                span.time 申请于{{unixTOnormal(applyTomeItem.applicationDate)}}
+                span.time 申请于{{unixTOnormal(applyTomeItem.requestTime)}}
             hr
             div(v-if="isothersapplyshow===index")
                 div
                 span.key 申请人
-                span.value {{applyTomeItem.applicant}}
+                span.value {{applyTomeItem.applicantName}}
                 hr
                 div
                 span.key 申请时间
-                span.value {{unixTOnormal(applyTomeItem.applicationDate)}}
+                span.value {{unixTOnormal(applyTomeItem.requestTime)}}
                 hr
                 div
                 span.key 申请人QQ
-                span.value {{applyTomeItem.qq}}
+                span.value {{applyTomeItem.QQ}}
                 hr   
                 div
                 span.key 申请项目
@@ -121,8 +121,9 @@
             hr
             div.title
                 span.name {{  mypublishItem.projectName }}
+                span.name {{mypublishItem.status===5?"管理员已删除":mypublishItem.status===4?'首页已隐藏':mypublishItem.status===1?'过期':'正常发布'}}
                 span.showApply(@click="isPublishShow=index") 展开>
-                span.time 发布于{{unixTOnormal(mypublishItem.publishedDate)}}
+                span.time 发布于{{unixTOnormal(mypublishItem.publishTime)}}
             table(v-if='isPublishShow===index')
                 tr 
                  td.block1 
@@ -150,17 +151,17 @@
                             v-if="one.name!==mypublishItem.masterName") {{ one.name }}  
                  td.block 
                     tr.key 发起人qq
-                    tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.qq }}
+                    tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.QQ }}
                     tr
-                    input(v-model="modified_qq=mypublishItem.qq",style="width: 80%",v-if="isModify_pub_start===index")
+                    input(v-model="modified_qq=mypublishItem.QQ",style="width: 80%",v-if="isModify_pub_start===index")
                 tr 
                  table(style="width:100%;margin:0;padding:0;border-width:0")
                     td.block(v-if="isModify_pub_start!==index")
                         tr.key 发布时间
-                        tr.value {{unixTOnormal(mypublishItem.publishedDate)}}
+                        tr.value {{unixTOnormal(mypublishItem.publishTime)}}
                     td.block 
                         tr.key 截止时间
-                        tr.value(v-if="isModify_pub_start!==index") {{unixTOnormal(mypublishItem.deadLine)}}
+                        tr.value(v-if="isModify_pub_start!==index") {{unixTOnormal(mypublishItem.endTime)}}
                         tr
                         input(type='date',v-model="modified_deadLine",style="width: 80%",v-if="isModify_pub_start===index")
                  td.block 
@@ -217,9 +218,9 @@
                    //////////用于修改申请时的中间变量
    modified_description_apply : '',
             modified_qq_apply : '',
-            isapplyshow : 0,
-            isothersapplyshow : 0,
-            isPublishShow : 0
+                  isapplyshow : -1,
+            isothersapplyshow : -1,
+                isPublishShow : -1
           
                 }
        },
@@ -325,7 +326,7 @@
             async submitModify_pub(tid){
                 let putData = {
                             tid,
-                             qq : this.modified_qq,
+                             QQ : this.modified_qq,
                        teamName : this.modified_teamName,
                     projectName : this.modified_peojectName,
                       maxPeople : this.modified_maxPeople,
@@ -353,7 +354,7 @@
             async submitmodifyApply(rid){
                 let putData = {
                               rid,
-                              qq : this.modified_qq_apply,
+                              QQ : this.modified_qq_apply,
                      description : this.modified_description_apply
                 };
                 if(this.modified_qq_apply && this.modified_description_apply){
@@ -542,7 +543,7 @@ textarea{
     color: white;
     margin-left: 3%;
     background-color: rgb(74,169,192);
-    padding: 1%;
+    padding: 0.4%;
     border-radius: 2px
 }
 .title .showApply{

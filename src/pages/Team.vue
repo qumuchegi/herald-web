@@ -25,7 +25,7 @@
             hr.divider 
             #want-project-title 
                 span {{ wantItem.projectName }}
-                span(style="float: right;color:rgb(188, 199, 199)") 发布于{{unixTOnormal( wantItem.publishedDate ).YMD}}
+                span(style="float: right;color:rgb(188, 199, 199)") 发布于{{unixTOnormal( wantItem.publishTime ).YMD}}
                 span.new(v-if="istimeNew(wantItem.publishedDate)") 新
             div(style= "display: inline-block ")
                 #present-members 
@@ -88,6 +88,7 @@
             };
             if(type===1){
                 let res = await api.get('/api/team', { type:type, page:page});
+                console.log(res)
                 this.wantInfo = res.data;
              }
         },
@@ -131,6 +132,7 @@
             this.$router.push({name: '组队管理'})
         },
         unixTOnormal(unixtime){
+            console.log(unixtime)
           if(typeof(unixtime)==='string')return unixtime;
           let unixTimestamp = new Date(unixtime * 1000);
           let Y = unixTimestamp.getFullYear();

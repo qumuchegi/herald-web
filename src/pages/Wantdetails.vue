@@ -15,15 +15,15 @@
             tr.value(v-if = "one.name!==wantInfo.masterName",v-for = "one of wantInfo.currentPeople") {{ one.name }}
           td.block 
             tr.key 发起人qq
-            tr.value {{ wantInfo.qq }}
+            tr.value {{ wantInfo.QQ }}
         tr 
           table 
             td.block 
               tr.key 发布时间
-              tr.value {{publishedData_unixTOnormal(wantInfo.publishedDate)}}
+              tr.value {{ unixTOnormal(wantInfo.publishTime)}}
             td.block 
               tr.key 截止时间
-              tr.value {{publishedData_unixTOnormal(wantInfo.deadLine)}}
+              tr.value {{ unixTOnormal(wantInfo.endTime)}}
           td.block 
               tr.key 预期招人
               tr.value {{wantInfo.maxPeople}}
@@ -75,7 +75,7 @@
                 ele.tid===this.wantID && ele.status!==3 && ele.status!==2? this.hasApplied=true : null;
             });
           },
-          publishedData_unixTOnormal(unixtime){
+        unixTOnormal(unixtime){
             if(typeof(unixtime)==='string')return unixtime;
             let unixTimestamp = new Date(unixtime * 1000);
             let Y = unixTimestamp.getFullYear();
