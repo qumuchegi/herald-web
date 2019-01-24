@@ -21,7 +21,8 @@
             hr 
             div.title
                 span.name {{ myapplyItem.projectName }}
-                span.showApply(@click="isapplyshow=index") 展开>
+                span.showApply(@click="isapplyshow=index",v-if="isapplyshow!==index") 展开>
+                span.showApply(@click="isapplyshow=-1",v-if="isapplyshow===index") 收缩<
                 span.time 申请于{{unixTOnormal(myapplyItem.requestTime)}}
             hr
             div.applydetails(v-if='isapplyshow===index')
@@ -78,12 +79,13 @@
                             @click="submitmodifyApply(id)",
                             v-if="isModify_apply_start===index") 完成
 
-        div.applys(v-for= "(applyTomeItem,index) of applyToMe",v-if= "show==2 && applyTomeItem.status!==2")
+        div.applys(v-for= "(applyTomeItem,index) of applyToMe",v-if= "show==2 ")
 
             hr
             div.title
                 span.name {{ applyTomeItem.applicantName }}
-                span.showApply(@click="isothersapplyshow=index") 展开>
+                span.showApply(@click="isothersapplyshow=index",v-if="isothersapplyshow!==index") 展开>
+                span.showApply(@click="isothersapplyshow=-1",v-if="isothersapplyshow===index") 收缩<
                 span.time 申请于{{unixTOnormal(applyTomeItem.requestTime)}}
             hr
             div(v-if="isothersapplyshow===index")
@@ -114,15 +116,15 @@
                 span(v-else)
                         div 
                         textarea(v-model="text",style="width: 80%",placeholder="填写通过或拒绝的理由 (选填)")
-                        div(style="margin-top: 5%;margin-left:20%")
-                        button(style="margin-left: 10%",@click="pass(applyTomeItem.rid,text)") 给予通过
+                        button(style="margin-left: 25%",@click="pass(applyTomeItem.rid,text)") 给予通过
                         button(style="margin-left: 10%",@click="reject(applyTomeItem.rid,text)") 给予拒绝
         div.my-publish(v-for= "(mypublishItem,index) of mypublish",v-if="show==3")
             hr
             div.title
                 span.name {{  mypublishItem.projectName }}
                 span.name {{mypublishItem.status===5?"管理员已删除":mypublishItem.status===4?'首页已隐藏':mypublishItem.status===1?'过期':'正常发布'}}
-                span.showApply(@click="isPublishShow=index") 展开>
+                span.showApply(@click="isPublishShow=index",v-if="isPublishShow!==index") 展开>
+                span.showApply(@click="isPublishShow=-1",v-if="isPublishShow===index") 收缩<
                 span.time 发布于{{unixTOnormal(mypublishItem.publishTime)}}
             table(v-if='isPublishShow===index')
                 tr 
@@ -160,10 +162,10 @@
                         tr.key 发布时间
                         tr.value {{unixTOnormal(mypublishItem.publishTime)}}
                     td.block 
-                        tr.key 截止时间
+                        tr.key(style="margin-left:5%") 截止时间
                         tr.value(v-if="isModify_pub_start!==index") {{unixTOnormal(mypublishItem.endTime)}}
                         tr
-                        input(type='date',v-model="modified_deadLine",style="width: 80%",v-if="isModify_pub_start===index")
+                         input(type='date',v-model="modified_deadLine",style="width: 77% ",v-if="isModify_pub_start===index")
                  td.block 
                     tr.key 预期招人
                     tr.value(v-if="isModify_pub_start!==index") {{mypublishItem.maxPeople}}
@@ -241,7 +243,7 @@
             },   
             async pass(rid,text='没有填写理由'){
                 try{
-                    let res = await api.post("/api/team/reply",{rid:rid,text:text,response:true})
+                    let res = await api.post("/api/team/reply",{rid:rid,text:text,responseText:true})
                     console.log(res.status)
                     if(res.status===0){
                        Vue.toasted.show('已通过')
@@ -253,7 +255,7 @@
             },
             async reject(rid,text='没有填写理由'){
                 try{
-                    let res = await api.post("/api/team/reply",{rid:rid,text:text,response:false})
+                    let res = await api.post("/api/team/reply",{rid:rid,text:text,responseText:false})
                     console.log(res.status)
                     if(res.status===0){
                        Vue.toasted.show('已拒绝')
