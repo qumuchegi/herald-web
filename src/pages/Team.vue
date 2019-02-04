@@ -1,10 +1,10 @@
 <template lang="pug">
     #body 
-        ul 
-          li(@click= "clickToSearch(isQuery)") 搜team
-          li(@click= "clickToFindMate" ) 招队员
-          li(@click= "clickToManage" ) 我的
-          li.isadmin(@click= "clickToAdmin",v-if= "user.cardnum!=='213163480'") 管理者
+        #ul 
+          span.li(@click= "clickToSearch(isQuery)") 搜team
+          span.li(@click= "clickToFindMate" ) 招队员
+          span.li(@click= "clickToManage" ) 我的
+          span.li.isadmin(@click= "clickToAdmin",v-if= "user.cardnum!=='213163480'") 管理者
         p#query-input(v-if= 'isQuery')
             select#querymodel( @change="changeQuerymodel") 
                 option(value="projectName" selected) 竞赛名
@@ -16,7 +16,7 @@
         #turn-page 
           span#ast-page(v-if= "page > 1",@click= "getLastPage") 上一页
           span(v-if= "page===1",style="color: white") 占位符
-          span(style="margin-left: 28.5%") 第{{page}}页
+          span(style="margin-left: 28.2%") 第{{page}}页
           span#next-page(v-if= "wantInfo.length===6",@click= "getNextPage" ) 下一页
         div#fresh(@click="getWantsOnPage_Of(1,page)") 刷新列表
         div#nomore(v-if= "wantInfo.length===0") 无更多召集令
@@ -167,11 +167,18 @@
     background-color: white;
     padding-top: 2%
 }
-ul li{
+#ul{
+    width:100%;
+   
+
+}
+#ul .li{
     color:black;
     display: inline-block;
-    margin-left: 13%;
+    width:33.333%;
+    text-align:center;
     font-weight:300%;
+    
 }
  
 #turn-page{
@@ -266,7 +273,7 @@ ul li{
 #fresh{
     border-radius: 2%;
     margin-top: 0.6% ;
-    margin-left:41.4%;
+    margin-left:41%;
     margin-bottom: 0%;
     padding:1% 2% 1% 2%;
     color: rgb(74,169,192)

@@ -2,23 +2,23 @@
     div#body
       h2 填写组队帖
       #call-form
-       div: span.key QQ
-            input#publisher-QQ(placeholder = "发布人QQ,用于后续联系",v-model = "QQ") 
+       div  
+            input#publisher-QQ(placeholder = "Q",v-model = "QQ") 
        hr
-       div: span.key 队名
-            input#publisher-comptation(placeholder = "队名",v-model = "teamName")
+       div  
+            input#publisher-name(placeholder = "队名",v-model = "teamName")
        hr
-       div: span.key 竞赛
+       div  
             input#publisher-comptation(placeholder = "竞赛名 :srtp 北斗杯……",v-model = "projectName")
        hr 
-       div: span.key 预期小组人数
-            input#publisher-num(placeholder = ">=1",v-model = "maxPeople")
+       div  
+            input#publisher-num(placeholder = "预期小组人数>=1",v-model = "maxPeople")
        hr 
-       div: span.key 截止时间
-            input.deadLine(type = "date",v-model = "endTime")
+       div   
+            input.deadLine(placeholder = "截止时间",type = "date",v-model = "endTime")
        hr
-       div: span.key 组队说明
-            textarea#publish-more(placeholder = "队员结构  招人条件 组队后分工安排 等.......",
+       div   
+            textarea#publish-more(placeholder = "组队说明: 队员结构  招人条件 组队后分工安排 等.......",
                                    v-model = "description",rows = "10",cols = "30")
        button#publish-button(@click = "publishWantAd") 发布帖子
  </template>
@@ -97,21 +97,11 @@
         #call-form input{
             border: 1px solid rgb(74，169，192)
         }
-        #publish-button{
-            margin-left: 34%;
-            margin-top: 5%;
-            padding: 1% 10% 1% 10%;
-        }
-        #publisher-name{
-            margin-left: 7%;
-
-        }
-        #publisher-stunumber{
-            margin-left: 8%;
-        }
-        #publisher-QQ{
-            margin-left: 22%;
-        }
+       #publisher-QQ,#publisher-name,#publisher-comptation,#publisher-num,.deadLine,#publish-more{
+        width:100%;
+        margin-bottom: 3%;
+         
+       }
         hr{
             margin: 2%;
         }
@@ -122,37 +112,13 @@
             border : radius 3px;
             font-size : 130%
         }
-        .key{
-            color: rgb(74,169,192)
+         
+        #publish-button{  
+            padding: 1% 10% 1% 10%;
+            position: relative;
+            margin-left:30%;
+            margin-top: 4%
         }
-    @media screen and (max-width: 480px) {
-        #publisher-comptation{
-            margin-left: 20%;
-        }
-        #publisher-num{
-            margin-left: 3.65%;
-        }
-        #publish-more{
-            margin-left: 12%;
-            border: 1px solid rgb(74，169，192) 
-        }
-        .deadLine{
-            margin-left: 11.7%
-        }
-    }
-    @media screen and (min-width: 500px){
-        #publisher-comptation{
-            margin-left: 21%;
-        }
-        #publisher-num{
-            margin-left: 13%;
-        }
-        #publish-more{
-            margin-left: 17%;
-            border: 1px solid rgb(74，169，192) 
-        }
-        .deadLine{
-            margin-left: 17%
-        }
-    }
+    
+    
 </style>

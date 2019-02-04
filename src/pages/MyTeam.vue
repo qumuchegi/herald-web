@@ -45,7 +45,7 @@
                 div
                     span.key 我的qq
                     span.value(v-if="isModify_apply_start!==index") {{myapplyItem.QQ}}
-                    input(v-if="isModify_apply_start===index",v-model="modified_qq_apply",style="width:60%")
+                    input(v-if="isModify_apply_start===index",v-model="modified_qq_apply",style="width:80%")
                 hr
                 div
                     span.key 申请状态
@@ -80,7 +80,6 @@
                             v-if="isModify_apply_start===index") 完成
 
         div.applys(v-for= "(applyTomeItem,index) of applyToMe",v-if= "show==2 ")
-
             hr
             div.title
                 span.name {{ applyTomeItem.applicantName }}
@@ -126,55 +125,50 @@
                 span.showApply(@click="isPublishShow=index",v-if="isPublishShow!==index") 展开>
                 span.showApply(@click="isPublishShow=-1",v-if="isPublishShow===index") 收缩<
                 span.time 发布于{{unixTOnormal(mypublishItem.publishTime)}}
-            table(v-if='isPublishShow===index')
-                tr 
-                 td.block1 
-                  table(style="width:100%;margin:0;padding:0;border-width:0")
-                   td(v-if="isModify_pub_start!==index")
-                    tr.key 竞赛类别
-                    tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.projectName }}
-                   td
-                    tr.key 帖子状态
-                    tr.value
-                     p(v-if="isModify_pub_start!==index",style="margin-left:2%;font-size:70%") {{mypublishItem.status===5?"管理员已删除":mypublishItem.status===4?'首页已隐藏':mypublishItem.status===1?'过期':'正常发布'}}
-                     p(v-if='mypublishItem.status===5',style="color:rgba(123,23,45);font-size:60%") 管理员：{{mypublishItem.msg}}
-                    tr
+            hr
+            div(v-if='isPublishShow===index')
+                div 
+                    span.key 竞赛类别
+                    span.value(v-if="isModify_pub_start!==index") {{ mypublishItem.projectName }}
                     input(v-model="modified_peojectName=mypublishItem.projectName",style="width: 80%",v-if="isModify_pub_start===index")                  
-                 td.block1 
-                    tr.key 团队名
-                    tr.value(v-if="isModify_pub_start!==index") {{mypublishItem.teamName}}
-                    tr
+                hr
+                div(v-if="isModify_pub_start!==index")
+                    span.key 帖子状态
+                    span.value(v-if="isModify_pub_start!==index" ) {{mypublishItem.status===5?"管理员已删除":mypublishItem.status===4?'首页已隐藏':mypublishItem.status===1?'过期':'正常发布'}}
+                    span.value(v-if='mypublishItem.status===5' ) 管理员：{{mypublishItem.msg}}
+                hr
+                div 
+                    span.key 团队名称
+                    span.value(v-if="isModify_pub_start!==index") {{mypublishItem.teamName}}
                     input(v-model="modified_teamName=mypublishItem.teamName",style="width: 80%",v-if="isModify_pub_start===index")
-                tr 
-                 td.block 
-                    tr.key 发起人及组员
-                    tr.value {{ mypublishItem.masterName }}（发起人）
-                    tr.value(v-for="one of mypublishItem.currentPeople", 
-                            v-if="one.name!==mypublishItem.masterName") {{ one.name }}  
-                 td.block 
-                    tr.key 发起人qq
-                    tr.value(v-if="isModify_pub_start!==index") {{ mypublishItem.QQ }}
-                    tr
-                    input(v-model="modified_qq=mypublishItem.QQ",style="width: 80%",v-if="isModify_pub_start===index")
-                tr 
-                 table(style="width:100%;margin:0;padding:0;border-width:0")
-                    td.block(v-if="isModify_pub_start!==index")
-                        tr.key 发布时间
-                        tr.value {{unixTOnormal(mypublishItem.publishTime)}}
-                    td.block 
-                        tr.key(style="margin-left:5%") 截止时间
-                        tr.value(v-if="isModify_pub_start!==index") {{unixTOnormal(mypublishItem.endTime)}}
-                        tr
-                         input(type='date',v-model="modified_deadLine",style="width: 77% ",v-if="isModify_pub_start===index")
-                 td.block 
-                    tr.key 预期招人
-                    tr.value(v-if="isModify_pub_start!==index") {{mypublishItem.maxPeople}}
-                    tr 
+                hr
+                div
+                    span.key 组员
+                    span.value(v-for="one of mypublishItem.currentPeople") {{ one.name }}  
+                hr
+                div
+                    span.key 发起人qq
+                    span.value(v-if="isModify_pub_start!==index") {{ mypublishItem.QQ }}
+                    input(v-model="modified_qq=mypublishItem.QQ",style="width: 79.4%",v-if="isModify_pub_start===index")
+                hr
+                div(v-if="isModify_pub_start!==index")
+                    span.key 发布时间
+                    span.value {{unixTOnormal(mypublishItem.publishTime)}}
+                hr
+                div 
+                    span.key  截止时间
+                    span.value(v-if="isModify_pub_start!==index") {{unixTOnormal(mypublishItem.endTime)}}
+                    input(type='date',v-model="modified_deadLine",style="width: 80%",v-if="isModify_pub_start===index")
+                hr
+                div
+                    span.key 预期招人
+                    span.value(v-if="isModify_pub_start!==index") {{mypublishItem.maxPeople}} 
                     input(v-model="modified_maxPeople=mypublishItem.maxPeople",style="width: 80%",v-if="isModify_pub_start===index")
+                hr
             #description(v-if='isPublishShow===index')
-                 .key 组队说明
-                 p.value(v-if="isModify_pub_start!==index",style="font-size:50%") {{mypublishItem.description}}
-                 textarea(v-model="modified_description=mypublishItem.description" ,rows="5",v-if="isModify_pub_start===index") 
+                span.key 组队说明
+                p(v-if="isModify_pub_start!==index",style="font-size:50%;margin-left:5%") {{mypublishItem.description}}
+                textarea(v-model="modified_description=mypublishItem.description" ,rows="5",style="margin-left:20%;width:85.6%",v-if="isModify_pub_start===index") 
             div(style="margin: 5% 20% 5% 36%",v-if='isPublishShow===index')
                   button(v-if="isModify_pub_start!==index && mypublishItem.status!==5 && mypublishItem.status!==4",
                         @click="WillmodifyPub(mypublishItem.tid,index)") 修改
@@ -387,7 +381,7 @@ table{
 #tab li{
     display:inline-block;
     padding: 1% 2% 1% 2%;
-    margin-left: 7%
+    margin-left: 5.8%
 }
 #tab .selected{
     background-color: rgba(226,250,254);
@@ -461,7 +455,7 @@ table{
 #description {
     padding-right: 3%;
     width:93%;
-    margin-left:2%;
+    
 }
 #remove-dialogue{
     width:60%;
@@ -523,18 +517,18 @@ textarea{
     margin-bottom:4%;
     margin-left:3%
 }
-.applys {
+.applys,.my-publish {
     width:94%;
     margin: 2% 3% 2% 3%;
     background-color: rgba(230,249,253);
     border-radius: 3px;
     padding-bottom: 3%
 }
-.applys .value{
+.applys .value,.my-publish .value{
     float: right;
     margin-right:6%
 }
-.applys hr{
+.applys hr,.my-publish hr{
     margin: 2.5%;
     width: 94%
 }
